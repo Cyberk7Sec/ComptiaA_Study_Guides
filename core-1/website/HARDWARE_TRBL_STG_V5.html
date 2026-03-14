@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hardware Troubleshooting — CompTIA A+ Core 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800;900&family=Inter:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07060e;--surface:#0e0c1c;--surface2:#131327;--border:#261e42;--border2:#3a2d60;--violet:#9d7fe8;--lavender:#c4b5fd;--magenta:#d946a8;--mint:#4ecca3;--rose:#c9956c;--amber:#f0a500;--text:#ede8f8;--dim:#6b5f8a;--dim2:#9d91bc;}
+*{margin:0;padding:0;box-sizing:border-box;}html{font-size:16px;scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:#3a2d60;border-radius:2px;}
+.galaxy{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.neb{position:absolute;border-radius:50%;filter:blur(90px);}
+.n1{width:700px;height:500px;background:radial-gradient(ellipse,rgba(100,40,200,0.22) 0%,transparent 70%);top:-150px;right:-100px;}
+.n2{width:600px;height:600px;background:radial-gradient(ellipse,rgba(70,20,160,0.15) 0%,transparent 70%);bottom:0;left:-200px;}
+.stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 8% 12%,rgba(255,255,255,0.6) 0%,transparent 100%),radial-gradient(1px 1px at 28% 8%,rgba(255,255,255,0.5) 0%,transparent 100%),radial-gradient(1px 1px at 63% 68%,rgba(255,255,255,0.35) 0%,transparent 100%),radial-gradient(1px 1px at 74% 18%,rgba(255,255,255,0.5) 0%,transparent 100%),radial-gradient(1px 1px at 91% 78%,rgba(255,255,255,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 34% 88%,rgba(200,180,255,0.35) 0%,transparent 100%),radial-gradient(1px 1px at 14% 72%,rgba(200,180,255,0.4) 0%,transparent 100%);}
+/* TOP PROGRESS */
+.top-progress{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 24px;position:sticky;top:0;z-index:101;}
+.tp-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;gap:12px;}
+.tp-label{font-family:'DM Mono',monospace;font-size:0.58em;letter-spacing:2px;color:var(--dim);white-space:nowrap;}
+.tp-track{flex:1;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;border:1px solid var(--border);}
+.tp-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--violet),var(--magenta));transition:width 0.8s;}
+.tp-pct{font-family:'Orbitron',monospace;font-size:0.7em;font-weight:800;color:var(--lavender);width:36px;text-align:right;}
+.tp-scores{display:flex;gap:10px;}
+.tp-score{font-family:'DM Mono',monospace;font-size:0.56em;color:var(--dim2);}
+.tp-score span{font-weight:700;}
+/* NAV */
+.topnav{position:sticky;top:38px;z-index:100;background:rgba(7,6,14,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 24px;}
+.nav-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;height:52px;gap:8px;}
+.nav-logo{font-family:'Orbitron',sans-serif;font-size:0.78em;font-weight:900;letter-spacing:3px;color:var(--text);margin-right:14px;white-space:nowrap;flex-shrink:0;}
+.nav-logo span{color:var(--magenta);}
+.nav-home{font-family:'DM Mono',monospace;font-size:0.58em;letter-spacing:1px;padding:4px 10px;border-radius:5px;border:1px solid var(--border2);color:var(--dim2);text-decoration:none;transition:all 0.2s;flex-shrink:0;}
+.nav-home:hover{border-color:var(--violet);color:var(--lavender);}
+.nav-tabs{display:flex;gap:2px;flex:1;overflow-x:auto;scrollbar-width:none;}
+.nav-tabs::-webkit-scrollbar{display:none;}
+.nav-tab{padding:6px 12px;border-radius:7px;cursor:pointer;transition:all 0.2s;white-space:nowrap;border:1px solid transparent;font-size:0.76em;font-weight:500;color:var(--dim2);flex-shrink:0;user-select:none;}
+.nav-tab:hover{color:var(--text);}
+.nav-tab.active{background:rgba(217,70,168,0.08);border-color:rgba(217,70,168,0.25);color:var(--magenta);}
+.nav-badge{font-family:'DM Mono',monospace;font-size:0.54em;padding:3px 9px;border-radius:20px;border:1px solid rgba(217,70,168,0.3);color:var(--magenta);background:rgba(217,70,168,0.06);margin-left:auto;flex-shrink:0;}
+/* LAYOUT */
+.page-wrap{max-width:1300px;margin:0 auto;padding:20px 24px 80px;position:relative;z-index:1;}
+.section-panel{display:none;}
+.section-panel.active{display:block;animation:fadeIn 0.3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.sec-head{margin-bottom:14px;}
+.sec-eyebrow{font-family:'DM Mono',monospace;font-size:0.57em;letter-spacing:4px;color:var(--dim);text-transform:uppercase;margin-bottom:3px;}
+.sec-title{font-family:'Orbitron',sans-serif;font-size:1.3em;font-weight:800;letter-spacing:2px;color:var(--text);margin-bottom:3px;}
+.sec-title span{color:var(--magenta);}
+.sec-desc{font-size:0.84em;color:var(--dim2);line-height:1.6;max-width:640px;}
+.hdiv{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:16px 0;}
+/* SIDEBAR */
+.with-sidebar{display:grid;grid-template-columns:1fr 200px;gap:16px;align-items:start;}
+@media(max-width:900px){.with-sidebar{grid-template-columns:1fr;}}
+.sidebar{position:sticky;top:104px;display:flex;flex-direction:column;gap:9px;}
+.s-card{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px;}
+.s-card-title{font-family:'Orbitron',sans-serif;font-size:0.54em;font-weight:700;letter-spacing:3px;color:var(--dim2);text-transform:uppercase;margin-bottom:8px;}
+.key-row{display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:0.72em;}
+.key-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0;}
+.cd-days{font-family:'Orbitron',sans-serif;font-size:1.7em;font-weight:900;color:var(--magenta);text-align:center;line-height:1;margin:4px 0 2px;}
+.cd-sub{font-size:0.68em;color:var(--dim2);text-align:center;}
+.prog-row-sb{display:flex;align-items:center;gap:5px;margin-bottom:5px;}
+.prog-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.prog-name-sb{font-size:0.7em;flex:1;color:var(--dim2);}
+.prog-track-sb{width:42px;height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.prog-fill-sb{height:100%;border-radius:2px;transition:width 0.6s;}
+.prog-pct-sb{font-family:'DM Mono',monospace;font-size:0.54em;width:22px;text-align:right;}
+/* NOTES */
+.notes-toggle{display:flex;align-items:center;gap:7px;padding:7px 0;cursor:pointer;user-select:none;}
+.notes-toggle-label{font-family:'Orbitron',sans-serif;font-size:0.64em;font-weight:700;letter-spacing:2px;color:var(--dim2);}
+.notes-icon{font-size:0.68em;color:var(--dim);transition:transform 0.2s;margin-left:4px;}
+.notes-toggle.open .notes-icon{transform:rotate(180deg);}
+.notes-area{display:none;margin-top:5px;}
+.notes-ta{width:100%;min-height:86px;background:var(--surface2);border:1px solid var(--border2);border-radius:7px;padding:10px;font-family:'DM Mono',monospace;font-size:0.74em;color:var(--text);resize:vertical;line-height:1.6;}
+.notes-ta:focus{outline:none;border-color:var(--violet);}
+.notes-saved{font-family:'DM Mono',monospace;font-size:0.56em;color:var(--mint);margin-top:3px;opacity:0;transition:opacity 0.3s;}
+.notes-saved.show{opacity:1;}
+/* DIAGRAM CONTROLS */
+.diag-controls{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:9px;}
+.ctrl-btn{padding:6px 13px;border-radius:7px;font-family:'DM Mono',monospace;font-size:0.63em;letter-spacing:1px;border:1px solid var(--border2);color:var(--dim2);background:none;cursor:pointer;transition:all 0.2s;}
+.ctrl-btn:hover,.ctrl-btn.on{border-color:var(--violet);color:var(--lavender);background:rgba(157,127,232,0.08);}
+.mode-pill{display:flex;background:var(--surface2);border:1px solid var(--border2);border-radius:7px;overflow:hidden;}
+.mpb{padding:5px 13px;font-family:'DM Mono',monospace;font-size:0.6em;letter-spacing:1px;border:none;background:none;color:var(--dim2);cursor:pointer;transition:all 0.2s;}
+.mpb.active{background:rgba(217,70,168,0.12);color:var(--magenta);}
+.toggle-wrap{display:flex;align-items:center;gap:6px;}
+.toggle-label{font-family:'DM Mono',monospace;font-size:0.6em;letter-spacing:2px;color:var(--dim2);}
+.tog{position:relative;width:32px;height:17px;cursor:pointer;flex-shrink:0;}
+.tog input{opacity:0;width:0;height:0;position:absolute;}
+.tog-track{position:absolute;inset:0;border-radius:9px;background:var(--border2);transition:background 0.2s;}
+.tog input:checked~.tog-track{background:var(--violet);}
+.tog-thumb{position:absolute;width:11px;height:11px;top:3px;left:3px;border-radius:50%;background:#fff;transition:transform 0.2s;}
+.tog input:checked~.tog-thumb{transform:translateX(15px);}
+/* SVG WRAP */
+.svg-wrap{background:#05060d;border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:10px;}
+.svg-wrap svg{width:100%;height:auto;display:block;}
+.anchor{cursor:pointer;}
+.anc-outer{transition:all 0.15s;}
+.anchor:hover .anc-outer{filter:drop-shadow(0 0 10px #ffaa00);}
+.anchor.active-anchor .anc-outer{fill:var(--lavender)!important;filter:drop-shadow(0 0 10px rgba(196,181,253,0.9));}
+.anc-text{fill:#000;font-family:'Orbitron',monospace;font-size:8px;font-weight:800;pointer-events:none;text-anchor:middle;}
+.label-text{transition:opacity 0.3s;pointer-events:none;}
+.label-text.blind{opacity:0!important;}
+/* QUIZ BANNER */
+.quiz-banner{display:none;background:rgba(217,70,168,0.06);border:1px solid rgba(217,70,168,0.22);border-radius:10px;padding:12px 16px;margin-bottom:9px;}
+.quiz-banner.visible{display:block;animation:fadeIn 0.3s ease;}
+.quiz-prompt{font-family:'DM Mono',monospace;font-size:0.56em;letter-spacing:2px;color:var(--dim2);margin-bottom:4px;}
+.quiz-symptom{font-size:0.96em;font-weight:600;color:var(--text);margin-bottom:5px;line-height:1.4;}
+.quiz-fb{font-size:0.86em;font-weight:600;min-height:18px;margin-bottom:4px;}
+.quiz-fb.win{color:var(--mint);}
+.quiz-fb.lose{color:var(--magenta);}
+.quiz-row{display:flex;align-items:center;gap:9px;}
+.quiz-skip{padding:4px 11px;border-radius:6px;font-family:'DM Mono',monospace;font-size:0.6em;border:1px solid var(--border2);color:var(--dim2);background:none;cursor:pointer;}
+.quiz-skip:hover{border-color:var(--violet);color:var(--lavender);}
+.quiz-score-val{font-family:'DM Mono',monospace;font-size:0.6em;color:var(--dim2);}
+/* COMP INFO */
+.comp-info{background:var(--surface2);border:1px solid var(--border2);border-radius:9px;padding:14px;min-height:70px;transition:all 0.2s;}
+.ci-num{font-family:'DM Mono',monospace;font-size:0.56em;letter-spacing:3px;color:var(--amber);margin-bottom:2px;}
+.ci-name{font-family:'Orbitron',sans-serif;font-size:0.96em;font-weight:800;color:var(--lavender);margin-bottom:5px;}
+.ci-badge{display:inline-block;margin-bottom:6px;padding:2px 8px;border-radius:3px;font-family:'DM Mono',monospace;font-size:0.55em;letter-spacing:1px;}
+.ci-text{font-size:0.84em;line-height:1.7;color:var(--dim2);}
+.ci-text strong{color:var(--text);}
+.ci-tip{margin-top:7px;padding:7px 11px;background:rgba(201,149,108,0.05);border:1px solid rgba(201,149,108,0.15);border-left:3px solid var(--rose);border-radius:5px;font-size:0.77em;color:#b8906a;line-height:1.6;}
+.ci-tip strong{color:var(--rose);}
+.ci-placeholder{font-family:'DM Mono',monospace;font-size:0.68em;color:var(--dim);letter-spacing:1px;text-align:center;padding:16px;}
+/* PHOTO in info panel */
+.ci-photo-row{display:flex;gap:10px;align-items:center;margin-top:9px;padding-top:9px;border-top:1px solid var(--border);}
+.ci-ph{width:76px;height:56px;border:1.5px dashed var(--border2);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;transition:border-color 0.2s;background:rgba(255,255,255,0.01);overflow:hidden;position:relative;flex-shrink:0;}
+.ci-ph:hover{border-color:var(--violet);}
+.ci-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:5px;}
+.ci-ph-icon{font-size:1.1em;opacity:0.3;}
+.ci-ph-txt{font-family:'DM Mono',monospace;font-size:0.4em;color:var(--dim);text-align:center;}
+/* BEEP PIANO */
+.beep-wrap{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:16px;margin-top:12px;}
+.beep-title{font-family:'Orbitron',sans-serif;font-size:0.76em;font-weight:800;letter-spacing:2px;color:var(--amber);margin-bottom:3px;}
+.beep-subtitle{font-size:0.78em;color:var(--dim2);margin-bottom:12px;line-height:1.5;}
+.beep-list{display:flex;flex-direction:column;gap:7px;margin-bottom:12px;}
+.beep-row{display:flex;align-items:center;gap:9px;padding:9px 13px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;cursor:pointer;transition:all 0.2s;}
+.beep-row:hover,.beep-row.playing{border-color:var(--amber);background:rgba(240,165,0,0.04);}
+.beep-play{width:30px;height:30px;border-radius:50%;background:rgba(240,165,0,0.1);border:1px solid rgba(240,165,0,0.3);display:flex;align-items:center;justify-content:center;font-size:0.85em;flex-shrink:0;transition:all 0.2s;}
+.beep-row:hover .beep-play{background:rgba(240,165,0,0.2);}
+.beep-vis{display:flex;gap:3px;align-items:center;flex:1;flex-wrap:wrap;}
+.bl{height:12px;border-radius:2px;background:var(--amber);opacity:0.65;}
+.bs{height:12px;border-radius:2px;background:var(--amber);opacity:0.65;}
+.beep-row.playing .bl,.beep-row.playing .bs{opacity:1;box-shadow:0 0 7px rgba(240,165,0,0.5);}
+.beep-desc-label{font-family:'DM Mono',monospace;font-size:0.62em;color:var(--dim2);width:120px;flex-shrink:0;}
+.beep-q-wrap{background:rgba(240,165,0,0.04);border:1px solid rgba(240,165,0,0.14);border-left:3px solid var(--amber);border-radius:8px;padding:11px 13px;margin-bottom:9px;}
+.beep-q-lbl{font-family:'DM Mono',monospace;font-size:0.54em;letter-spacing:3px;color:var(--amber);margin-bottom:4px;}
+.beep-q-text{font-size:0.88em;font-weight:600;color:var(--text);margin-bottom:9px;line-height:1.4;}
+.beep-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+@media(max-width:500px){.beep-opts{grid-template-columns:1fr;}}
+.beep-opt{padding:8px 12px;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;font-size:0.82em;cursor:pointer;transition:all 0.2s;text-align:left;}
+.beep-opt:hover:not(.disabled){border-color:var(--amber);color:var(--text);}
+.beep-opt.correct{border-color:var(--mint);background:rgba(78,204,163,0.07);color:var(--mint);}
+.beep-opt.wrong{border-color:rgba(217,70,168,0.3);opacity:0.4;cursor:default;}
+.beep-opt.disabled{cursor:default;}
+.beep-fb{margin-top:7px;padding:8px 12px;border-radius:6px;font-size:0.8em;line-height:1.6;display:none;}
+.beep-fb.show{display:block;animation:fadeIn 0.2s ease;}
+.beep-fb.win{background:rgba(78,204,163,0.06);border:1px solid rgba(78,204,163,0.2);color:var(--mint);}
+.beep-fb.lose{background:rgba(217,70,168,0.05);border:1px solid rgba(217,70,168,0.15);color:var(--dim2);}
+.beep-fb strong{color:var(--text);}
+.beep-next{margin-top:7px;padding:6px 17px;border-radius:6px;font-family:'Orbitron',sans-serif;font-size:0.64em;font-weight:700;border:1px solid var(--mint);color:var(--mint);background:none;cursor:pointer;transition:all 0.2s;display:none;}
+.beep-next:hover{background:var(--mint);color:#000;}
+/* MICRO QUIZ */
+.micro-wrap{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:16px;margin-top:12px;}
+.mq-title{font-family:'Orbitron',sans-serif;font-size:0.76em;font-weight:800;letter-spacing:2px;color:var(--magenta);margin-bottom:3px;}
+.mq-subtitle{font-size:0.78em;color:var(--dim2);margin-bottom:12px;}
+.mq-q{font-size:0.9em;font-weight:600;color:var(--text);margin-bottom:11px;line-height:1.5;}
+.mq-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:9px;}
+@media(max-width:540px){.mq-opts{grid-template-columns:1fr;}}
+.mq-opt{display:flex;align-items:center;gap:7px;padding:9px 12px;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;font-size:0.82em;cursor:pointer;transition:all 0.2s;text-align:left;}
+.mq-opt:hover:not(.disabled){border-color:var(--magenta);color:var(--text);}
+.mq-opt.correct{border-color:var(--mint);background:rgba(78,204,163,0.07);color:var(--mint);}
+.mq-opt.wrong{border-color:rgba(217,70,168,0.3);opacity:0.4;cursor:default;}
+.mq-opt.disabled{cursor:default;}
+.mq-ltr{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:0.64em;font-weight:800;background:var(--border2);color:var(--dim2);flex-shrink:0;}
+.mq-opt.correct .mq-ltr{background:var(--mint);color:#000;}
+.mq-opt.wrong .mq-ltr{background:rgba(217,70,168,0.2);color:var(--magenta);}
+.mq-fb{padding:9px 12px;border-radius:6px;font-size:0.8em;line-height:1.6;display:none;margin-bottom:7px;}
+.mq-fb.show{display:block;animation:fadeIn 0.2s ease;}
+.mq-fb.win{background:rgba(78,204,163,0.06);border:1px solid rgba(78,204,163,0.2);color:var(--mint);}
+.mq-fb.lose{background:rgba(217,70,168,0.05);border:1px solid rgba(217,70,168,0.15);color:var(--dim2);}
+.mq-fb strong{color:var(--text);}
+.mq-trap{margin-top:5px;padding:5px 9px;background:rgba(240,165,0,0.06);border:1px solid rgba(240,165,0,0.18);border-left:3px solid var(--amber);border-radius:4px;font-size:0.76em;color:var(--amber);line-height:1.5;}
+.mq-next{padding:6px 18px;border-radius:6px;font-family:'Orbitron',sans-serif;font-size:0.64em;font-weight:700;border:1px solid var(--mint);color:var(--mint);background:none;cursor:pointer;transition:all 0.2s;display:none;}
+.mq-next:hover{background:var(--mint);color:#000;}
+.mq-score-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.mq-score-label{font-family:'DM Mono',monospace;font-size:0.6em;color:var(--dim2);}
+.mq-score-label span{font-weight:700;}
+.mq-complete{text-align:center;padding:18px;}
+.mq-pct{font-family:'Orbitron',sans-serif;font-size:2.2em;font-weight:900;color:var(--mint);}
+.mq-restart{margin-top:7px;padding:6px 18px;border-radius:6px;font-family:'Orbitron',sans-serif;font-size:0.64em;font-weight:700;border:1px solid var(--violet);color:var(--violet);background:none;cursor:pointer;transition:all 0.2s;}
+.mq-restart:hover{background:var(--violet);color:#000;}
+/* PATTERN BAR */
+.pattern-bar{display:flex;gap:5px;flex-wrap:wrap;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:9px;margin-bottom:11px;}
+.pb-label{font-family:'DM Mono',monospace;font-size:0.52em;letter-spacing:3px;color:var(--dim);text-transform:uppercase;width:100%;margin-bottom:2px;}
+.pat{display:flex;align-items:center;gap:3px;padding:3px 8px;border-radius:18px;font-family:'DM Mono',monospace;font-size:0.58em;border:1px solid;white-space:nowrap;}
+/* TRAINER */
+.mode-btn{padding:7px 16px;border-radius:7px;font-family:'Orbitron',sans-serif;font-size:0.66em;font-weight:700;letter-spacing:1px;border:1px solid var(--border2);color:var(--dim2);background:none;cursor:pointer;transition:all 0.2s;}
+.mode-btn:hover{border-color:var(--lavender);color:var(--lavender);}
+.mode-btn.active{background:rgba(157,127,232,0.1);border-color:var(--violet);color:var(--lavender);}
+.scenario-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.sc-score-row{display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap;}
+.sc-score-item{font-family:'DM Mono',monospace;font-size:0.62em;color:var(--dim2);}
+.sc-score-item span{font-weight:700;}
+.phase-steps{display:flex;gap:5px;margin-bottom:12px;align-items:center;flex-wrap:wrap;}
+.phase-step{display:flex;align-items:center;gap:4px;padding:4px 9px;border-radius:5px;font-family:'DM Mono',monospace;font-size:0.56em;letter-spacing:1px;border:1px solid var(--border2);color:var(--dim);}
+.phase-step.active{border-color:var(--magenta);color:var(--magenta);background:rgba(217,70,168,0.07);}
+.phase-step.done{border-color:var(--mint);color:var(--mint);background:rgba(78,204,163,0.06);}
+.phase-num{width:15px;height:15px;border-radius:50%;background:var(--border2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.86em;}
+.phase-step.active .phase-num{background:var(--magenta);color:#000;}
+.phase-step.done .phase-num{background:var(--mint);color:#000;}
+.sc-report{background:rgba(217,70,168,0.05);border:1px solid rgba(217,70,168,0.15);border-left:3px solid var(--magenta);border-radius:8px;padding:12px;margin-bottom:13px;}
+.sc-report-lbl{font-family:'DM Mono',monospace;font-size:0.52em;letter-spacing:3px;color:var(--magenta);margin-bottom:4px;}
+.sc-report-txt{font-size:0.95em;font-weight:600;color:var(--text);line-height:1.5;}
+.sc-phase-lbl{font-family:'DM Mono',monospace;font-size:0.52em;letter-spacing:3px;color:var(--dim);margin-bottom:6px;}
+.sc-q{font-family:'Orbitron',sans-serif;font-size:0.86em;font-weight:700;color:var(--lavender);margin-bottom:11px;line-height:1.4;}
+.sc-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;}
+@media(max-width:560px){.sc-opts{grid-template-columns:1fr;}}
+.sc-opt{display:flex;align-items:center;gap:7px;padding:9px 12px;background:var(--surface2);border:1px solid var(--border2);border-radius:7px;font-size:0.82em;font-weight:500;cursor:pointer;transition:all 0.2s;text-align:left;}
+.sc-opt:hover:not(.disabled){border-color:var(--magenta);color:var(--text);}
+.sc-opt.correct{border-color:var(--mint);background:rgba(78,204,163,0.07);color:var(--mint);}
+.sc-opt.wrong{border-color:rgba(217,70,168,0.3);opacity:0.4;cursor:default;}
+.sc-opt.disabled{cursor:default;}
+.opt-ltr{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:0.64em;font-weight:800;background:var(--border2);color:var(--dim2);flex-shrink:0;}
+.sc-opt.correct .opt-ltr{background:var(--mint);color:#000;}
+.sc-opt.wrong .opt-ltr{background:rgba(217,70,168,0.2);color:var(--magenta);}
+.sc-fb{background:var(--surface2);border:1px solid var(--border2);border-radius:7px;padding:11px;margin-bottom:9px;display:none;}
+.sc-fb.show{display:block;animation:fadeIn 0.3s ease;}
+.fb-result{font-weight:700;font-size:0.84em;margin-bottom:4px;}
+.fb-result.win{color:var(--mint);}
+.fb-result.lose{color:var(--magenta);}
+.fb-note{font-size:0.78em;color:var(--dim2);line-height:1.7;}
+.fb-note strong{color:var(--text);}
+.fb-trap{margin-top:5px;padding:5px 9px;background:rgba(240,165,0,0.06);border:1px solid rgba(240,165,0,0.18);border-left:3px solid var(--amber);border-radius:4px;font-size:0.74em;color:var(--amber);line-height:1.5;}
+.chain-trail{display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin-top:7px;}
+.c-tag{font-family:'DM Mono',monospace;font-size:0.56em;padding:2px 7px;border-radius:3px;border:1px solid;letter-spacing:0.5px;}
+.c-arr{color:var(--dim);font-size:0.65em;}
+.sc-next{padding:7px 20px;border-radius:7px;font-family:'Orbitron',sans-serif;font-size:0.7em;font-weight:700;border:1px solid var(--mint);color:var(--mint);background:none;cursor:pointer;transition:all 0.2s;}
+.sc-next:hover{background:var(--mint);color:#000;}
+/* SYMPTOM LIBRARY */
+.sym-cats{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;}
+.sym-cat-btn{padding:6px 13px;border-radius:7px;font-family:'Orbitron',sans-serif;font-size:0.64em;font-weight:700;border:1px solid var(--border2);color:var(--dim2);background:none;cursor:pointer;transition:all 0.2s;}
+.sym-cat-btn.active{background:rgba(217,70,168,0.08);border-color:var(--magenta);color:var(--magenta);}
+.sym-panel{display:none;}
+.sym-panel.active{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;animation:fadeIn 0.3s ease;}
+.sym-card{background:var(--surface);border:1px solid var(--border);border-radius:9px;overflow:hidden;}
+.sym-hdr{padding:10px 12px;border-bottom:1px solid var(--border);}
+.sym-symptom{font-size:0.86em;font-weight:600;color:var(--text);margin-bottom:2px;}
+.sym-tag{font-family:'DM Mono',monospace;font-size:0.54em;letter-spacing:1px;padding:1px 6px;border-radius:3px;}
+.sym-body{padding:8px 12px;display:flex;flex-direction:column;gap:4px;}
+.sym-row{display:flex;gap:6px;font-size:0.76em;align-items:flex-start;}
+.sym-lbl{font-family:'DM Mono',monospace;font-size:0.68em;letter-spacing:1px;color:var(--dim);width:58px;flex-shrink:0;padding-top:2px;}
+.sym-val{color:var(--dim2);line-height:1.5;}
+.sym-val strong{color:var(--text);}
+.sym-fix{color:var(--mint);font-weight:600;}
+.sym-exam{padding:5px 8px;background:rgba(201,149,108,0.05);border:1px solid rgba(201,149,108,0.15);border-left:2px solid var(--rose);border-radius:4px;font-size:0.72em;color:#b8906a;line-height:1.5;}
+/* PROGRESS */
+.prog-big-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:18px;margin-bottom:12px;}
+.pb-title{font-family:'Orbitron',sans-serif;font-size:0.7em;font-weight:700;letter-spacing:3px;color:var(--dim2);text-transform:uppercase;margin-bottom:13px;}
+.pb-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.pb-label{font-size:0.84em;font-weight:600;width:130px;flex-shrink:0;}
+.pb-track{flex:1;height:7px;background:var(--surface2);border-radius:3px;overflow:hidden;border:1px solid var(--border);}
+.pb-fill{height:100%;border-radius:3px;transition:width 0.8s ease;}
+.pb-pct{font-family:'DM Mono',monospace;font-size:0.66em;width:30px;text-align:right;flex-shrink:0;}
+.pb-status{font-family:'DM Mono',monospace;font-size:0.52em;padding:2px 7px;border-radius:6px;border:1px solid;letter-spacing:1px;flex-shrink:0;}
+.trap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;}
+.trap-card{background:var(--surface);border:1px solid rgba(240,165,0,0.2);border-left:3px solid var(--amber);border-radius:8px;padding:11px;}
+.trap-lbl{font-family:'DM Mono',monospace;font-size:0.52em;letter-spacing:2px;color:var(--amber);margin-bottom:4px;}
+.trap-symptom{font-size:0.81em;font-weight:600;color:var(--text);margin-bottom:2px;}
+.trap-wrong{font-size:0.72em;color:var(--dim);margin-bottom:2px;}
+.trap-correct{font-size:0.81em;font-weight:700;color:var(--mint);}
+.trap-why{font-size:0.7em;color:var(--dim2);margin-top:3px;line-height:1.4;}
+/* WHAT'S DIFFERENT GAME */
+.wd-wrap{background:var(--surface);border:1px solid var(--border);border-radius:11px;overflow:hidden;}
+.wd-topic-tabs{display:flex;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--border);}
+.wd-topic-tabs::-webkit-scrollbar{display:none;}
+.wd-ttab{padding:9px 16px;font-family:'DM Mono',monospace;font-size:0.62em;letter-spacing:1px;border:none;background:none;color:var(--dim2);cursor:pointer;transition:all 0.2s;white-space:nowrap;border-bottom:2px solid transparent;}
+.wd-ttab:hover{color:var(--text);}
+.wd-ttab.active{color:var(--violet);border-bottom-color:var(--violet);background:rgba(157,127,232,0.05);}
+.wd-body{padding:16px;}
+.wd-score-row{display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap;}
+.wd-score-item{font-family:'DM Mono',monospace;font-size:0.6em;color:var(--dim2);}
+.wd-score-item span{font-weight:700;}
+.wd-symptom-banner{background:rgba(217,70,168,0.06);border:1px solid rgba(217,70,168,0.2);border-left:3px solid var(--magenta);border-radius:8px;padding:11px 14px;margin-bottom:8px;}
+.wd-symptom-lbl{font-family:'DM Mono',monospace;font-size:0.52em;letter-spacing:3px;color:var(--magenta);margin-bottom:3px;}
+.wd-symptom-txt{font-size:0.96em;font-weight:600;color:var(--text);}
+.wd-clue-banner{background:rgba(240,165,0,0.05);border:1px solid rgba(240,165,0,0.2);border-left:3px solid var(--amber);border-radius:8px;padding:10px 14px;margin-bottom:12px;}
+.wd-clue-lbl{font-family:'DM Mono',monospace;font-size:0.52em;letter-spacing:3px;color:var(--amber);margin-bottom:3px;}
+.wd-clue-txt{font-size:1em;font-weight:700;color:var(--amber);}
+.wd-opts{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px;}
+@media(max-width:520px){.wd-opts{grid-template-columns:1fr;}}
+.wd-opt{display:flex;align-items:center;gap:8px;padding:10px 13px;background:var(--surface2);border:1px solid var(--border2);border-radius:7px;font-size:0.84em;font-weight:500;cursor:pointer;transition:all 0.2s;text-align:left;}
+.wd-opt:hover:not(.disabled){border-color:var(--violet);color:var(--text);}
+.wd-opt.correct{border-color:var(--mint);background:rgba(78,204,163,0.08);color:var(--mint);}
+.wd-opt.wrong{border-color:rgba(217,70,168,0.3);opacity:0.4;cursor:default;}
+.wd-opt.disabled{cursor:default;}
+.wd-ltr{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:0.64em;font-weight:800;background:var(--border2);color:var(--dim2);flex-shrink:0;}
+.wd-opt.correct .wd-ltr{background:var(--mint);color:#000;}
+.wd-opt.wrong .wd-ltr{background:rgba(217,70,168,0.2);color:var(--magenta);}
+.wd-fb{padding:10px 13px;border-radius:7px;font-size:0.82em;line-height:1.7;display:none;margin-bottom:8px;}
+.wd-fb.show{display:block;animation:fadeIn 0.2s ease;}
+.wd-fb.win{background:rgba(78,204,163,0.06);border:1px solid rgba(78,204,163,0.2);color:var(--mint);}
+.wd-fb.lose{background:rgba(217,70,168,0.05);border:1px solid rgba(217,70,168,0.15);color:var(--dim2);}
+.wd-fb strong{color:var(--text);}
+.wd-why{margin-top:6px;padding:6px 10px;background:rgba(157,127,232,0.06);border:1px solid rgba(157,127,232,0.18);border-left:3px solid var(--violet);border-radius:4px;font-size:0.78em;color:var(--lavender);line-height:1.5;}
+.wd-next{padding:7px 20px;border-radius:7px;font-family:'Orbitron',sans-serif;font-size:0.66em;font-weight:700;border:1px solid var(--mint);color:var(--mint);background:none;cursor:pointer;transition:all 0.2s;display:none;}
+.wd-next:hover{background:var(--mint);color:#000;}
+.wd-complete{text-align:center;padding:20px;}
+.wd-pct{font-family:'Orbitron',sans-serif;font-size:2em;font-weight:900;color:var(--mint);}
+/* CONFUSION TABLE */
+.conf-table{width:100%;border-collapse:collapse;background:var(--surface);border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+.conf-table th{padding:10px 13px;font-family:'Orbitron',sans-serif;font-size:0.6em;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid var(--border2);}
+.conf-table td{padding:9px 13px;font-size:0.82em;line-height:1.5;border-bottom:1px solid var(--border);vertical-align:top;}
+.conf-table tr:last-child td{border-bottom:none;}
+.conf-table tr:hover td{background:rgba(255,255,255,0.02);}
+.conf-symptom{color:var(--text);font-weight:600;}
+.conf-clue{color:var(--amber);font-family:'DM Mono',monospace;font-size:0.88em;}
+.conf-wrong{color:var(--magenta);font-size:0.82em;}
+.conf-wrong::before{content:'✗ ';font-weight:700;}
+.conf-right{color:var(--mint);font-weight:600;}
+.conf-right::before{content:'✓ ';font-weight:700;}
+/* STATUS */
+.statusbar{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(7,6,14,0.93);backdrop-filter:blur(16px);border-top:1px solid var(--border);padding:5px 24px;display:flex;align-items:center;gap:10px;}
+.sb-item{display:flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:0.53em;color:var(--dim);letter-spacing:1px;}
+.sb-dot{width:4px;height:4px;border-radius:50%;}
+.sb-sep{width:1px;height:10px;background:var(--border2);}
+</style>
+</head>
+<body>
+<div class="galaxy"><div class="neb n1"></div><div class="neb n2"></div><div class="stars"></div></div>
+
+<!-- TOP PROGRESS -->
+<div class="top-progress">
+  <div class="tp-inner">
+    <span class="tp-label">Mastery</span>
+    <div class="tp-track"><div class="tp-fill" id="tp-fill" style="width:0%"></div></div>
+    <span class="tp-pct" id="tp-pct">0%</span>
+    <div class="tp-scores">
+      <span class="tp-score">Diagram <span id="tp-diag">0%</span></span>
+      <span class="tp-score">Trainer <span id="tp-t">0%</span></span>
+      <span class="tp-score">Beep <span id="tp-b">0%</span></span>
+    </div>
+  </div>
+</div>
+
+<nav class="topnav">
+  <div class="nav-inner">
+    <div class="nav-logo">HARDWARE<span>·</span>TRBL</div>
+    <a class="nav-home" href="index.html">⌂ HOME</a>
+    <div class="nav-tabs">
+      <div class="nav-tab active" onclick="switchTab(0)">🖥 Diagram</div>
+      <div class="nav-tab" onclick="switchTab(1)">🎯 Trainer</div>
+      <div class="nav-tab" onclick="switchTab(2)">📋 Symptoms</div>
+      <div class="nav-tab" onclick="switchTab(3)">📊 Progress</div>
+    </div>
+    <div class="nav-badge">220-1101 · 28%</div>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+<!-- TAB 1: DIAGRAM -->
+<div class="section-panel active" id="panel-0">
+  <div class="with-sidebar">
+    <div>
+      <div class="sec-head">
+        <div class="sec-eyebrow">Section 1 · Hardware</div>
+        <div class="sec-title">Motherboard <span>Diagram</span></div>
+        <div class="sec-desc">Click amber circles to inspect components. <strong>Blind Mode</strong> hides labels. <strong>Click-Quiz</strong> gives you a symptom — click the right component. Toggle <strong>Concept / Exam</strong> to switch what the panel shows.</div>
+      </div>
+      <div class="diag-controls">
+        <div class="toggle-wrap">
+          <span class="toggle-label">BLIND MAP</span>
+          <label class="tog"><input type="checkbox" id="blind-tog"><div class="tog-track"></div><div class="tog-thumb"></div></label>
+        </div>
+        <button class="ctrl-btn" id="quiz-btn" onclick="toggleQuiz()">🎯 CLICK-QUIZ</button>
+        <button class="ctrl-btn" onclick="resetDiag()">↺ RESET</button>
+        <div class="mode-pill">
+          <button class="mpb active" id="mpb-concept" onclick="setDiagMode('concept',this)">CONCEPT</button>
+          <button class="mpb" id="mpb-exam" onclick="setDiagMode('exam',this)">EXAM</button>
+        </div>
+      </div>
+      <div class="quiz-banner" id="quiz-banner">
+        <div class="quiz-prompt">CLICK-QUIZ — click the component causing this symptom</div>
+        <div class="quiz-symptom" id="quiz-sym">—</div>
+        <div class="quiz-fb" id="quiz-fb"></div>
+        <div class="quiz-row">
+          <button class="quiz-skip" onclick="nextQuiz()">Skip →</button>
+          <span class="quiz-score-val" id="quiz-score">Score: 0 correct</span>
+        </div>
+      </div>
+      <div class="svg-wrap" id="svg-wrap"></div>
+      <div class="comp-info" id="comp-info">
+        <div class="ci-placeholder">Click any <strong style="color:var(--amber)">① amber circle</strong> to inspect · <strong style="color:var(--magenta)">EXAM</strong> mode shows failure symptoms</div>
+      </div>
+      <div class="hdiv"></div>
+      <div class="beep-wrap">
+        <div class="beep-title">🎵 Beep Code Piano</div>
+        <div class="beep-subtitle">Press ▶ to hear the pattern, then identify which component failed at POST. Beep codes fire before video — the only way BIOS can communicate a failure.</div>
+        <div class="beep-list" id="beep-list"></div>
+        <div class="beep-q-wrap" id="beep-q-wrap"></div>
+        <div class="beep-fb" id="beep-fb"></div>
+        <button class="beep-next" id="beep-next" onclick="nextBeep()">NEXT →</button>
+      </div>
+      <div class="hdiv"></div>
+      <div class="micro-wrap">
+        <div class="mq-title">⚡ Micro Quiz — Logic Recall</div>
+        <div class="mq-subtitle">Tests logic, not just identification. "3 beeps + black screen = which component?" Different from Click-Quiz.</div>
+        <div id="mq-wrap"></div>
+      </div>
+      <div class="hdiv"></div>
+      <div class="notes-toggle" id="nt0" onclick="toggleNotes('nt0','na0','hw_diag_notes')">
+        <span>📝</span><span class="notes-toggle-label">Personal Notes</span><span class="notes-icon">▼</span>
+      </div>
+      <div class="notes-area" id="na0">
+        <textarea class="notes-ta" id="hw_diag_notes" placeholder="Your memory tricks...&#10;No display + fans spin → Reseat RAM&#10;Clicking HDD → BACKUP NOW&#10;Burning smell → Unplug IMMEDIATELY"></textarea>
+        <div class="notes-saved" id="ns0">✓ Saved</div>
+      </div>
+    </div>
+    <div class="sidebar" id="sb-0"></div>
+  </div>
+</div>
+
+<!-- TAB 2: TRAINER -->
+<div class="section-panel" id="panel-1">
+  <div class="with-sidebar">
+    <div>
+      <div class="sec-head">
+        <div class="sec-eyebrow">Section 2 · Diagnostic Trainer</div>
+        <div class="sec-title">Symptom → Category → <span>Fix</span></div>
+        <div class="sec-desc">3-phase scenarios. Phase 1 always: <strong>"What changed?"</strong></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="pattern-bar" id="pattern-bar"></div>
+        <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;">
+          <button class="mode-btn active" id="tb-study" onclick="setTrainerMode('study',this)">📖 STUDY</button>
+          <button class="mode-btn" id="tb-exam" onclick="setTrainerMode('exam',this)">🎯 EXAM</button>
+          <span style="font-family:'DM Mono',monospace;font-size:0.58em;color:var(--dim);" id="tm-desc">Study: explanation shown after each answer</span>
+        </div>
+        <div id="trainer-card"></div>
+      </div>
+      <div class="hdiv"></div>
+      <div class="notes-toggle" id="nt1" onclick="toggleNotes('nt1','na1','hw_train_notes')">
+        <span>📝</span><span class="notes-toggle-label">Personal Notes</span><span class="notes-icon">▼</span>
+      </div>
+      <div class="notes-area" id="na1">
+        <textarea class="notes-ta" id="hw_train_notes" placeholder="Patterns you keep missing..."></textarea>
+        <div class="notes-saved" id="ns1">✓ Saved</div>
+      </div>
+    </div>
+    <div class="sidebar" id="sb-1"></div>
+  </div>
+</div>
+
+<!-- TAB 3: SYMPTOMS -->
+<div class="section-panel" id="panel-2">
+  <div class="with-sidebar">
+    <div>
+      <div class="sec-head">
+        <div class="sec-eyebrow">Section 3 · Symptom Library</div>
+        <div class="sec-title">Know the <span>Patterns</span></div>
+        <div class="sec-desc">Every symptom → cause → fix → exam note.</div>
+      </div>
+      <div class="sym-cats" id="sym-cats"></div>
+      <div id="sym-panels"></div>
+
+      <div class="hdiv"></div>
+
+      <!-- WHAT'S DIFFERENT GAME -->
+      <div style="font-family:'Orbitron',sans-serif;font-size:0.76em;font-weight:800;letter-spacing:2px;color:var(--violet);margin-bottom:4px;">🔍 WHAT'S DIFFERENT? — Same Symptom, Different Clue</div>
+      <div style="font-size:0.8em;color:var(--dim2);margin-bottom:12px;line-height:1.5;">Same symptom — one extra clue changes the answer. This is exactly how the exam works. Pick the correct component based on the detail shown.</div>
+      <div id="wd-game"></div>
+
+      <div class="hdiv"></div>
+
+      <!-- CONFUSION TABLE -->
+      <div style="font-family:'Orbitron',sans-serif;font-size:0.76em;font-weight:800;letter-spacing:2px;color:var(--amber);margin-bottom:4px;">⚠ CONFUSION TABLE — Most Missed on Exam</div>
+      <div style="font-size:0.8em;color:var(--dim2);margin-bottom:12px;">These are the pairs people confuse most. The detail in the middle is what separates the answers.</div>
+      <div id="confusion-table"></div>
+
+      <div class="hdiv"></div>
+      <div class="notes-toggle" id="nt2" onclick="toggleNotes('nt2','na2','hw_sym_notes')">
+        <span>📝</span><span class="notes-toggle-label">Personal Notes</span><span class="notes-icon">▼</span>
+      </div>
+      <div class="notes-area" id="na2">
+        <textarea class="notes-ta" id="hw_sym_notes" placeholder="Symptoms you keep confusing..."></textarea>
+        <div class="notes-saved" id="ns2">✓ Saved</div>
+      </div>
+    </div>
+    <div class="sidebar" id="sb-2"></div>
+  </div>
+</div>
+
+<!-- TAB 4: PROGRESS -->
+<div class="section-panel" id="panel-3">
+  <div class="sec-head">
+    <div class="sec-eyebrow">Section 4</div>
+    <div class="sec-title">Progress + <span>Exam Traps</span></div>
+  </div>
+  <div class="prog-big-card" id="prog-card"></div>
+  <div style="font-family:'Orbitron',sans-serif;font-size:0.7em;font-weight:700;letter-spacing:2px;color:var(--amber);margin-bottom:10px;">★ EXAM TRAP CARDS</div>
+  <div class="trap-grid" id="trap-grid"></div>
+</div>
+
+</div><!-- /page-wrap -->
+
+<div class="statusbar">
+  <div class="sb-item"><div class="sb-dot" style="background:var(--magenta)"></div>CompTIA A+ 220-1101</div>
+  <div class="sb-sep"></div>
+  <div class="sb-item">Hardware · 28% of exam</div>
+  <div class="sb-sep"></div>
+  <div class="sb-item" id="sb-score">Score: 0/0</div>
+  <div class="sb-sep"></div>
+  <div class="sb-item" id="sb-sec">Diagram</div>
+</div>
+<script id="main-script">
+// ═══ STATE ═══
+const S={diagPct:0,tR:0,tW:0,bR:0,bW:0,mqR:0,mqW:0};
+try{Object.assign(S,JSON.parse(localStorage.getItem('hw3_s')||'{}'));}catch(e){}
+const save=()=>{try{localStorage.setItem('hw3_s',JSON.stringify(S));}catch(e){}};
+
+// ═══ TABS ═══
+const TAB_NAMES=['Diagram','Trainer','Symptoms','Progress'];
+function switchTab(i){
+  document.querySelectorAll('.section-panel').forEach((p,j)=>p.classList.toggle('active',j===i));
+  document.querySelectorAll('.nav-tab').forEach((t,j)=>t.classList.toggle('active',j===i));
+  document.getElementById('sb-sec').textContent=TAB_NAMES[i];
+  updateTP();
+}
+
+// ═══ TOP PROGRESS ═══
+function updateTP(){
+  const tP=S.tR+S.tW>0?Math.round(S.tR/(S.tR+S.tW)*100):0;
+  const bP=S.bR+S.bW>0?Math.round(S.bR/(S.bR+S.bW)*100):0;
+  const ov=Math.round((S.diagPct+tP+bP)/3);
+  document.getElementById('tp-fill').style.width=ov+'%';
+  document.getElementById('tp-pct').textContent=ov+'%';
+  document.getElementById('tp-diag').textContent=S.diagPct+'%';
+  document.getElementById('tp-t').textContent=tP+'%';
+  document.getElementById('tp-b').textContent=bP+'%';
+  document.getElementById('sb-score').textContent=`Score: ${S.tR}/${S.tR+S.tW}`;
+}
+updateTP();
+
+// ═══ SIDEBAR ═══
+function buildSB(id){
+  const el=document.getElementById(id);if(!el||el.innerHTML.trim())return;
+  const tP=S.tR+S.tW>0?Math.round(S.tR/(S.tR+S.tW)*100):0;
+  const bP=S.bR+S.bW>0?Math.round(S.bR/(S.bR+S.bW)*100):0;
+  const now=new Date(),exam=new Date(now);
+  exam.setDate(exam.getDate()+(now.getDay()<=1?1-now.getDay():8-now.getDay()));exam.setHours(9,0,0,0);
+  const diff=Math.max(0,Math.ceil((exam-now)/86400000));
+  el.innerHTML=`<div class="s-card"><div class="s-card-title">⚠ Exam</div>
+    <div style="border:1px solid rgba(217,70,168,0.2);border-radius:7px;padding:8px;text-align:center;">
+      <div style="font-family:'DM Mono',monospace;font-size:0.52em;letter-spacing:2px;color:var(--dim)">DAYS LEFT</div>
+      <div class="cd-days">${diff||'!'}</div><div class="cd-sub">A+ 220-1101</div></div></div>
+  <div class="s-card"><div class="s-card-title">Color Key</div>
+    <div class="key-row"><div class="key-dot" style="background:var(--violet)"></div><span style="color:var(--dim2);font-size:0.72em"><b style="color:var(--text)">Violet</b> = Component</span></div>
+    <div class="key-row"><div class="key-dot" style="background:var(--magenta)"></div><span style="color:var(--dim2);font-size:0.72em"><b style="color:var(--text)">Magenta</b> = Symptom</span></div>
+    <div class="key-row"><div class="key-dot" style="background:var(--mint)"></div><span style="color:var(--dim2);font-size:0.72em"><b style="color:var(--text)">Mint</b> = Fix</span></div>
+    <div class="key-row"><div class="key-dot" style="background:var(--rose)"></div><span style="color:var(--dim2);font-size:0.72em"><b style="color:var(--text)">Rose</b> = Exam Tip</span></div>
+    <div class="key-row"><div class="key-dot" style="background:var(--amber)"></div><span style="color:var(--dim2);font-size:0.72em"><b style="color:var(--text)">Amber</b> = Trap/Anchor</span></div>
+  </div>
+  <div class="s-card"><div class="s-card-title">Progress</div>
+    ${[['Diagram',S.diagPct,'var(--amber)'],['Trainer',tP,'var(--mint)'],['Beep',bP,'var(--violet)']].map(([n,v,c])=>`
+    <div class="prog-row-sb"><div class="prog-dot" style="background:${c}"></div><div class="prog-name-sb">${n}</div>
+    <div class="prog-track-sb"><div class="prog-fill-sb" style="width:${v}%;background:${c}"></div></div>
+    <div class="prog-pct-sb" style="color:${c}">${v}%</div></div>`).join('')}
+  </div>`;
+}
+for(let i=0;i<4;i++) setTimeout(()=>buildSB('sb-'+i),180);
+
+// ═══ NOTES ═══
+function toggleNotes(tId,aId,key){
+  const t=document.getElementById(tId);t.classList.toggle('open');
+  document.getElementById(aId).style.display=t.classList.contains('open')?'block':'none';
+}
+['hw_diag_notes','hw_train_notes','hw_sym_notes'].forEach((k,i)=>{
+  const ta=document.getElementById(k);if(!ta)return;
+  try{ta.value=localStorage.getItem(k)||'';}catch(e){}
+  ta.addEventListener('input',()=>{
+    try{localStorage.setItem(k,ta.value);}catch(e){}
+    const sv=document.getElementById('ns'+i);sv.classList.add('show');setTimeout(()=>sv.classList.remove('show'),1400);
+  });
+});
+
+// ═══ COMPONENT DATA ═══
+const COMPS={
+  1:{name:'ATX 24-pin Power',
+     concept:'Main power connector from PSU to motherboard. Delivers <strong>+3.3V, +5V, +12V</strong>. A separate 8-pin CPU connector powers the CPU voltage regulator modules (VRM).',
+     exam:'<strong>Symptom: System completely dead — no fan spin, no lights.</strong> Check this connector AND the 8-pin CPU connector. Both must be seated. Missing either = completely dead system.',
+     tip:'★ EXAM: Always check BOTH power connectors — 24-pin ATX (board) and 8-pin CPU. Missing the 8-pin = fans spin but no POST.'},
+  2:{name:'CPU Socket (LGA/AM5)',
+     concept:'Zero Insertion Force (ZIF) socket holds the CPU. Thermal paste applied between CPU and heatsink. Intel = LGA (pins in socket), AMD = AM5 (pins on CPU). Never force insertion.',
+     exam:'<strong>Symptom: Random shutdown under load, high temps in BIOS.</strong> CPU overheating = reapply thermal paste. No POST = check socket for bent pins. Heatsink must be mounted firmly.',
+     tip:'★ EXAM: Overheating CPU → random shutdown (not BSOD). Thermal paste dries after 3-5 years. Bent socket pin = no POST, expensive repair.'},
+  3:{name:'RAM Slots (DIMM)',
+     concept:'DDR4/DDR5 slots. Always install matched pairs in <strong>A2+B2</strong> first for dual-channel. RAM is physically keyed — DDR5 will not fit in DDR4 slot.',
+     exam:'<strong>Symptom: No POST, beep codes (1 or 3 beeps), BSOD MEMORY_MANAGEMENT, only half RAM showing.</strong> Reseat RAM. Test one stick at a time. Try A2 slot first.',
+     tip:'★ EXAM: RAM = #1 cause of no-POST. ALWAYS reseat before replacing. Beep codes at POST = almost always RAM. MEMORY_MANAGEMENT BSOD = RAM hardware fault.'},
+  4:{name:'PCIe x16 Slot (GPU)',
+     concept:'Primary slot for discrete GPU. Slot provides 75W. High-end GPUs need additional <strong>6-pin or 8-pin PCIe power from PSU</strong>. Latch at end must click closed.',
+     exam:'<strong>Symptom: No display (1 long + 2 short beeps), screen artifacts, random black screen.</strong> Reseat GPU. Check PCIe power connectors from PSU are plugged in fully.',
+     tip:'★ EXAM: Artifacts/glitching = GPU overheating. If integrated works but discrete GPU does not = GPU or PCIe slot failed. Always check power connectors first.'},
+  5:{name:'SATA Ports',
+     concept:'Serial ATA ports connect HDDs, SSDs, and optical drives. Each port = one device. SATA cable carries data; separate power connector from PSU. 6 Gbps max.',
+     exam:'<strong>Symptom: Drive not detected in BIOS, "Boot device not found."</strong> Check SATA data cable and power cable. Try different SATA port on board. Swap cable to test.',
+     tip:'★ EXAM: Check cables BEFORE declaring drive dead. Clicking noise = HDD mechanical failure → back up immediately. SSD not detected = cable or BIOS setting.'},
+  6:{name:'M.2 Slot (NVMe)',
+     concept:'High-speed slot for M.2 SSDs. <strong>NVMe M.2 uses PCIe lanes</strong> — much faster than SATA M.2. Must screw down standoff to secure drive. Some boards disable SATA when M.2 is populated.',
+     exam:'<strong>Symptom: NVMe SSD not detected in BIOS.</strong> Ensure fully seated and screw is tight. Enable NVMe in BIOS. Check if SATA ports were auto-disabled.',
+     tip:'★ EXAM: NVMe ≠ SATA M.2. They look identical but use different interfaces. NVMe dramatically faster. Check board compatibility before purchasing.'},
+  7:{name:'CMOS Battery (CR2032)',
+     concept:'3V lithium coin cell battery. Maintains BIOS settings (date, time, boot order, hardware config) when PC is powered off. Lasts 3-10 years.',
+     exam:'<strong>Symptom: Date/time resets every boot, BIOS settings lost, "CMOS checksum error" on startup.</strong> Replace the CR2032 battery — about $3. Remove to reset BIOS to defaults.',
+     tip:'★ EXAM: Removing CMOS battery = resets BIOS to factory defaults. Used to clear forgotten BIOS password. CMOS battery dying = settings lost on every shutdown.'},
+  8:{name:'Rear I/O Panel',
+     concept:'Contains USB-A/C, DisplayPort, HDMI, Ethernet (RJ-45), audio jacks. Integrated graphics output ports are HERE. Discrete GPU has its OWN ports on the card itself.',
+     exam:'<strong>Symptom: No display from rear panel with discrete GPU installed.</strong> You must use the GPU\'s ports, not the motherboard\'s. Using motherboard HDMI with discrete GPU = no signal.',
+     tip:'★ EXAM: Most common beginner mistake. Plugging monitor into motherboard HDMI when a GPU is installed = black screen. Always use GPU ports when a GPU is present.'},
+  9:{name:'Chipset',
+     concept:'Controller hub that manages communication between CPU, RAM, PCIe slots, USB, and storage. Connects to CPU via high-speed bus. Generates some heat (has its own small heatsink).',
+     exam:'<strong>Symptom: USB ports intermittent, storage controller errors.</strong> Chipset failure is rare but possible. Usually a BIOS update or driver resolves controller issues.',
+     tip:'★ EXAM: Chipset is rarely a primary exam focus. More important: know that chipset generation determines which CPUs are compatible (e.g., Z790 = Intel 12th/13th gen).'},
+  10:{name:'CPU Fan Header',
+     concept:'4-pin PWM header that controls CPU fan speed. BIOS monitors CPU temp and adjusts fan speed accordingly. If fan not connected here, BIOS may halt boot with fan error.',
+     exam:'<strong>Symptom: BIOS shows "CPU fan error" and halts boot, or CPU overheats with fan not spinning.</strong> Verify fan is plugged into CPU_FAN header specifically, not a case fan header.',
+     tip:'★ EXAM: Fan connected to wrong header = BIOS fan error or no speed control. CPU_FAN header is the primary monitored header. System may refuse to boot without fan detected.'}
+};
+
+// ═══ QUIZ TARGETS (click-quiz) ═══
+const QUIZ_Q=[
+  {sym:'PC completely dead — no lights, no fans',target:1},
+  {sym:'Random shutdown after 20 minutes under load',target:2},
+  {sym:'No POST — fans spin but no display, 3 beeps',target:3},
+  {sym:'"Boot device not found" at startup',target:5},
+  {sym:'Display artifacts, screen glitching during gaming',target:4},
+  {sym:'Date and time resets every time you power off',target:7},
+  {sym:'NVMe drive not detected in BIOS',target:6},
+  {sym:'BIOS fan error — system halts at startup',target:10},
+  {sym:'Monitor shows no signal with GPU installed',target:8},
+  {sym:'Clicking noise from inside the PC',target:5},
+];
+
+// ═══ SVG DIAGRAM ═══
+function buildSVG(){
+  const wrap=document.getElementById('svg-wrap');if(!wrap||wrap.innerHTML.trim())return;
+  wrap.innerHTML=`<svg viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="ga"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <!-- PCB -->
+  <rect x="20" y="15" width="760" height="490" rx="12" fill="#060d18" stroke="#1a3020" stroke-width="1.5"/>
+  <rect x="32" y="27" width="736" height="466" rx="7" fill="#040b14" stroke="#0e1e10" stroke-width="1"/>
+  <!-- trace lines -->
+  <line x1="32" y1="75" x2="768" y2="75" stroke="#091408" stroke-width="0.7"/>
+  <line x1="32" y1="170" x2="768" y2="170" stroke="#091408" stroke-width="0.7"/>
+  <line x1="32" y1="270" x2="768" y2="270" stroke="#091408" stroke-width="0.7"/>
+  <line x1="32" y1="390" x2="768" y2="390" stroke="#091408" stroke-width="0.7"/>
+  <line x1="200" y1="27" x2="200" y2="493" stroke="#091408" stroke-width="0.7"/>
+  <line x1="410" y1="27" x2="410" y2="493" stroke="#091408" stroke-width="0.7"/>
+  <line x1="600" y1="27" x2="600" y2="493" stroke="#091408" stroke-width="0.7"/>
+  <!-- ATX 24-pin -->
+  <rect x="42" y="38" width="26" height="82" rx="3" fill="#0b1c10" stroke="#228844" stroke-width="1.5"/>
+  <text x="55" y="58" text-anchor="middle" fill="#228844" font-size="6" font-family="Share Tech Mono">ATX</text>
+  <text x="55" y="68" text-anchor="middle" fill="#228844" font-size="6" font-family="Share Tech Mono">24P</text>
+  <circle cx="49" cy="78" r="1.8" fill="#228844" opacity="0.7"/><circle cx="55" cy="78" r="1.8" fill="#228844" opacity="0.7"/><circle cx="61" cy="78" r="1.8" fill="#228844" opacity="0.7"/>
+  <circle cx="49" cy="86" r="1.8" fill="#228844" opacity="0.7"/><circle cx="55" cy="86" r="1.8" fill="#228844" opacity="0.7"/><circle cx="61" cy="86" r="1.8" fill="#228844" opacity="0.7"/>
+  <circle cx="49" cy="94" r="1.8" fill="#228844" opacity="0.7"/><circle cx="55" cy="94" r="1.8" fill="#228844" opacity="0.7"/><circle cx="61" cy="94" r="1.8" fill="#228844" opacity="0.7"/>
+  <text class="label-text" x="55" y="134" text-anchor="middle" fill="rgba(200,240,200,0.5)" font-size="8" font-family="Barlow" font-weight="600">ATX Power</text>
+  <!-- CPU 8-pin -->
+  <rect x="210" y="38" width="42" height="20" rx="2" fill="#0b1c10" stroke="#228844" stroke-width="1.2"/>
+  <text x="231" y="51" text-anchor="middle" fill="#228844" font-size="6" font-family="Share Tech Mono">CPU 8-PIN</text>
+  <text class="label-text" x="231" y="72" text-anchor="middle" fill="rgba(200,240,200,0.45)" font-size="8" font-family="Barlow">CPU Pwr</text>
+  <!-- CPU Socket -->
+  <rect x="210" y="88" width="172" height="162" rx="7" fill="#0a1828" stroke="#2a3e6a" stroke-width="1.8"/>
+  <rect x="222" y="100" width="148" height="138" rx="4" fill="#060c1a" stroke="#1a2e4a" stroke-width="1"/>
+  <rect x="234" y="112" width="124" height="114" rx="3" fill="#040a16"/>
+  <text x="296" y="162" text-anchor="middle" fill="#1a3060" font-size="9" font-family="Share Tech Mono" font-weight="bold">CPU</text>
+  <text x="296" y="175" text-anchor="middle" fill="#0e204a" font-size="6" font-family="Share Tech Mono">SOCKET</text>
+  <text class="label-text" x="296" y="264" text-anchor="middle" fill="rgba(160,190,255,0.55)" font-size="9" font-family="Barlow" font-weight="600">CPU Socket</text>
+  <!-- RAM Slots -->
+  <rect x="420" y="38" width="17" height="142" rx="3" fill="#0c1628" stroke="#3355bb" stroke-width="1.5"/>
+  <rect x="443" y="38" width="17" height="142" rx="3" fill="#0c1628" stroke="#3355bb" stroke-width="1.5"/>
+  <rect x="466" y="38" width="17" height="142" rx="3" fill="#0c1628" stroke="#2244aa" stroke-width="1" opacity="0.6"/>
+  <rect x="489" y="38" width="17" height="142" rx="3" fill="#0c1628" stroke="#2244aa" stroke-width="1" opacity="0.6"/>
+  <rect x="424" y="93" width="9" height="4" rx="1" fill="#3355bb" opacity="0.5"/>
+  <rect x="447" y="93" width="9" height="4" rx="1" fill="#3355bb" opacity="0.5"/>
+  <text x="426" y="34" text-anchor="middle" fill="#224499" font-size="6" font-family="Share Tech Mono">A2</text>
+  <text x="451" y="34" text-anchor="middle" fill="#224499" font-size="6" font-family="Share Tech Mono">B2</text>
+  <text class="label-text" x="462" y="198" text-anchor="middle" fill="rgba(90,140,255,0.55)" font-size="9" font-family="Barlow" font-weight="600">RAM Slots</text>
+  <!-- PCIe x16 -->
+  <rect x="42" y="278" width="306" height="17" rx="3" fill="#0c1028" stroke="#9933bb" stroke-width="1.8"/>
+  <text x="80" y="290" fill="#9933bb" font-size="6" font-family="Share Tech Mono">PCIe x16</text>
+  <text class="label-text" x="195" y="312" text-anchor="middle" fill="rgba(170,90,220,0.55)" font-size="9" font-family="Barlow" font-weight="600">PCIe x16 (GPU)</text>
+  <!-- PCIe x1 -->
+  <rect x="42" y="338" width="152" height="13" rx="2" fill="#0a0e20" stroke="#553366" stroke-width="1.1"/>
+  <rect x="42" y="366" width="152" height="13" rx="2" fill="#0a0e20" stroke="#553366" stroke-width="1.1"/>
+  <!-- SATA -->
+  <rect x="610" y="38" width="15" height="42" rx="3" fill="#0d1820" stroke="#cc7700" stroke-width="1.5"/>
+  <rect x="630" y="38" width="15" height="42" rx="3" fill="#0d1820" stroke="#cc7700" stroke-width="1.5"/>
+  <rect x="650" y="38" width="15" height="42" rx="3" fill="#0d1820" stroke="#aa5500" stroke-width="1" opacity="0.6"/>
+  <rect x="670" y="38" width="15" height="42" rx="3" fill="#0d1820" stroke="#aa5500" stroke-width="1" opacity="0.6"/>
+  <text x="640" y="94" text-anchor="middle" fill="rgba(200,130,40,0.55)" font-size="7" font-family="Share Tech Mono">SATA</text>
+  <text class="label-text" x="640" y="108" text-anchor="middle" fill="rgba(200,130,40,0.55)" font-size="9" font-family="Barlow" font-weight="600">SATA Ports</text>
+  <!-- M.2 -->
+  <rect x="420" y="222" width="114" height="13" rx="2" fill="#0d1820" stroke="#00bb99" stroke-width="1.5"/>
+  <text x="477" y="232" text-anchor="middle" fill="#00bb99" font-size="6" font-family="Share Tech Mono">M.2 NVMe</text>
+  <text class="label-text" x="477" y="252" text-anchor="middle" fill="rgba(0,190,150,0.55)" font-size="9" font-family="Barlow" font-weight="600">M.2 Slot</text>
+  <!-- CMOS Battery -->
+  <circle cx="162" cy="358" r="25" fill="#0c1628" stroke="#ddbb00" stroke-width="1.8"/>
+  <circle cx="162" cy="358" r="17" fill="#060c18" stroke="#bbaa00" stroke-width="1"/>
+  <text x="162" y="354" text-anchor="middle" fill="#ddbb00" font-size="6" font-family="Share Tech Mono">CR</text>
+  <text x="162" y="364" text-anchor="middle" fill="#ddbb00" font-size="6" font-family="Share Tech Mono">2032</text>
+  <text class="label-text" x="162" y="398" text-anchor="middle" fill="rgba(240,190,0,0.55)" font-size="9" font-family="Barlow" font-weight="600">CMOS Battery</text>
+  <!-- Rear I/O -->
+  <rect x="42" y="430" width="132" height="60" rx="4" fill="#091620" stroke="#2c5577" stroke-width="1.4"/>
+  <rect x="48" y="438" width="13" height="9" rx="1" fill="#0c2030" stroke="#3388cc" stroke-width="0.8"/>
+  <rect x="64" y="438" width="13" height="9" rx="1" fill="#0c2030" stroke="#3388cc" stroke-width="0.8"/>
+  <rect x="80" y="438" width="13" height="9" rx="1" fill="#0c2030" stroke="#3388cc" stroke-width="0.8"/>
+  <rect x="48" y="452" width="18" height="11" rx="1" fill="#0c2030" stroke="#7733cc" stroke-width="0.8"/>
+  <rect x="70" y="452" width="15" height="11" rx="1" fill="#0c2030" stroke="#7733cc" stroke-width="0.8"/>
+  <rect x="100" y="438" width="20" height="17" rx="2" fill="#0c2030" stroke="#229966" stroke-width="0.8"/>
+  <circle cx="56" cy="476" r="5" fill="#0c2030" stroke="#999" stroke-width="0.8"/>
+  <circle cx="70" cy="476" r="5" fill="#0c2030" stroke="#999" stroke-width="0.8"/>
+  <circle cx="84" cy="476" r="5" fill="#0c2030" stroke="#999" stroke-width="0.8"/>
+  <text class="label-text" x="108" y="506" text-anchor="middle" fill="rgba(70,150,210,0.55)" font-size="9" font-family="Barlow" font-weight="600">Rear I/O</text>
+  <!-- Chipset -->
+  <rect x="420" y="290" width="76" height="66" rx="5" fill="#0c1628" stroke="#1a2e55" stroke-width="1.4"/>
+  <rect x="430" y="300" width="56" height="46" rx="3" fill="#060c18" stroke="#0e2040" stroke-width="0.8"/>
+  <text x="458" y="326" text-anchor="middle" fill="#1a2e55" font-size="7" font-family="Share Tech Mono">CHIPSET</text>
+  <text class="label-text" x="458" y="372" text-anchor="middle" fill="rgba(70,110,190,0.55)" font-size="9" font-family="Barlow" font-weight="600">Chipset</text>
+  <!-- CPU Fan Header -->
+  <rect x="700" y="122" width="30" height="18" rx="2" fill="#0c1628" stroke="#33aacc" stroke-width="1.1"/>
+  <text x="715" y="134" text-anchor="middle" fill="#33aacc" font-size="5.5" font-family="Share Tech Mono">CPU FAN</text>
+  <text class="label-text" x="715" y="155" text-anchor="middle" fill="rgba(70,170,210,0.55)" font-size="9" font-family="Barlow" font-weight="600">CPU Fan</text>
+
+  <!-- ANCHORS -->
+  ${[[1,55,122],[2,296,175],[3,462,130],[4,195,295],[5,700,65],[6,420,240],[7,130,358],[8,186,465],[9,458,340],[10,700,148]].map(([id,x,y])=>`
+  <g class="anchor" id="anc-${id}" data-id="${id}" onclick="selectAnchor(${id})">
+    <circle cx="${x}" cy="${y}" r="13" fill="rgba(255,170,0,0.12)"/>
+    <circle cx="${x}" cy="${y}" r="10" class="anc-outer" fill="#ffaa00" filter="url(#ga)"/>
+    <circle cx="${x}" cy="${y}" r="7" fill="#000"/>
+    <text x="${x}" y="${y+3}" class="anc-text" ${id>=10?'font-size="6"':''}>${id}</text>
+  </g>`).join('')}
+  </svg>`;
+}
+
+// ═══ DIAGRAM STATE ═══
+let diagState={blind:false,quiz:false,quizIdx:0,quizScore:0,quizTarget:0,diagMode:'concept',opened:new Set()};
+
+document.getElementById('blind-tog').addEventListener('change',e=>{
+  diagState.blind=e.target.checked;
+  document.querySelectorAll('.label-text').forEach(el=>el.classList.toggle('blind',diagState.blind));
+});
+
+function setDiagMode(mode,btn){
+  diagState.diagMode=mode;
+  document.querySelectorAll('.mpb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  const active=document.querySelector('.anchor.active-anchor');
+  if(active) selectAnchor(parseInt(active.dataset.id));
+}
+
+function selectAnchor(id){
+  document.querySelectorAll('.anchor').forEach(a=>a.classList.remove('active-anchor'));
+  document.getElementById('anc-'+id).classList.add('active-anchor');
+  diagState.opened.add(id);
+  S.diagPct=Math.round(diagState.opened.size/Object.keys(COMPS).length*100);
+  save(); updateTP();
+  const c=COMPS[id];
+  const isExam=diagState.diagMode==='exam';
+  const badge=isExam
+    ?`<div class="ci-badge" style="background:rgba(217,70,168,0.1);border:1px solid rgba(217,70,168,0.3);color:var(--magenta)">EXAM MODE — Failure Symptoms</div>`
+    :`<div class="ci-badge" style="background:rgba(157,127,232,0.1);border:1px solid rgba(157,127,232,0.3);color:var(--lavender)">CONCEPT MODE — How It Works</div>`;
+  const body=isExam?c.exam:c.concept;
+  document.getElementById('comp-info').innerHTML=`
+    <div class="ci-num">COMPONENT ${id.toString().padStart(2,'0')}</div>
+    <div class="ci-name">${c.name}</div>
+    ${badge}
+    <div class="ci-text">${body}</div>
+    <div class="ci-tip"><strong>★ EXAM:</strong> ${c.tip}</div>
+    <div class="ci-photo-row">
+      <div><div class="ci-ph" id="ciph-${id}" onclick="document.getElementById('ciinp-${id}').click()">
+        <div class="ci-ph-icon">📷</div><div class="ci-ph-txt">ADD PHOTO</div>
+      </div>
+      <input type="file" accept="image/*" style="display:none" id="ciinp-${id}" onchange="loadCiPhoto(${id},this)"/>
+      </div>
+      <div style="font-size:0.76em;color:var(--dim2);line-height:1.5;">Upload your own reference photo of this component. Stored locally.</div>
+    </div>`;
+  try{const sv=localStorage.getItem('hwph_'+id);if(sv){const ph=document.getElementById('ciph-'+id);ph.innerHTML=`<img src="${sv}"/>`;}}catch(e){}
+  if(diagState.quiz){
+    if(id===diagState.quizTarget){
+      diagState.quizScore++;
+      document.getElementById('quiz-fb').className='quiz-fb win';
+      document.getElementById('quiz-fb').textContent='✅ Correct! — '+c.name;
+      document.getElementById('quiz-score').textContent='Score: '+diagState.quizScore+' correct';
+      setTimeout(nextQuiz,1200);
+    } else {
+      document.getElementById('quiz-fb').className='quiz-fb lose';
+      document.getElementById('quiz-fb').textContent='✗ That\'s '+c.name+' — keep looking';
+    }
+  }
+}
+
+function loadCiPhoto(id,inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();r.onload=e=>{
+    const ph=document.getElementById('ciph-'+id);if(ph)ph.innerHTML=`<img src="${e.target.result}"/>`;
+    try{localStorage.setItem('hwph_'+id,e.target.result);}catch(ex){}
+  };r.readAsDataURL(f);
+}
+
+// ═══ CLICK-QUIZ ═══
+let quizQ=[...QUIZ_Q].sort(()=>Math.random()-0.5);
+let quizPos=0;
+
+function toggleQuiz(){
+  diagState.quiz=!diagState.quiz;
+  const btn=document.getElementById('quiz-btn');
+  const banner=document.getElementById('quiz-banner');
+  if(diagState.quiz){
+    btn.classList.add('on');btn.textContent='⏹ END QUIZ';
+    banner.classList.add('visible');
+    diagState.blind=true;
+    document.getElementById('blind-tog').checked=true;
+    document.querySelectorAll('.label-text').forEach(el=>el.classList.add('blind'));
+    loadQuizQ();
+  } else {
+    btn.classList.remove('on');btn.textContent='🎯 CLICK-QUIZ';
+    banner.classList.remove('visible');
+  }
+}
+
+function loadQuizQ(){
+  if(quizPos>=quizQ.length){quizQ=[...QUIZ_Q].sort(()=>Math.random()-0.5);quizPos=0;}
+  const q=quizQ[quizPos];
+  diagState.quizTarget=q.target;
+  document.getElementById('quiz-sym').textContent=q.sym;
+  document.getElementById('quiz-fb').textContent='';
+  document.getElementById('quiz-fb').className='quiz-fb';
+}
+
+function nextQuiz(){quizPos++;loadQuizQ();}
+
+function resetDiag(){
+  document.querySelectorAll('.anchor').forEach(a=>a.classList.remove('active-anchor'));
+  document.getElementById('comp-info').innerHTML='<div class="ci-placeholder">Click any <strong style="color:var(--amber)">① amber circle</strong> to inspect · <strong style="color:var(--magenta)">EXAM</strong> mode shows failure symptoms</div>';
+  if(diagState.quiz){toggleQuiz();}
+  diagState.opened=new Set();S.diagPct=0;save();updateTP();
+}
+
+// ═══ BEEP CODE DATA + PIANO ═══
+const BEEPS=[
+  {label:'1 short beep',pattern:[{t:'s'}],q:'A single short beep is heard at POST. This usually means:',opts:['RAM failure — reseat memory','POST completed successfully — normal','GPU not seated properly','CPU overheating detected'],answer:1,explain:'A single short beep on most BIOS vendors = POST completed successfully. The PC is working. If you still have issues, they are post-POST (boot device, OS).'},
+  {label:'Continuous beep',pattern:[{t:'l'},{t:'l'},{t:'l'}],q:'A continuous or repeating long beep is heard. What failed?',opts:['Overheating CPU shutdown','RAM not detected or seated incorrectly','Boot drive not found','Correct — normal startup sound'],answer:1,explain:'Continuous or repeating beeps = RAM failure on most BIOS systems (AMI, Award). RAM not seated, wrong slot, or dead module.'},
+  {label:'1 long + 2 short',pattern:[{t:'l'},{t:'g'},{t:'s'},{t:'s'}],q:'You hear 1 long beep followed by 2 short beeps. What does this indicate?',opts:['RAM failure — replace immediately','Video/GPU failure or not seated','CPU socket pin bent','PSU voltage problem'],answer:1,explain:'1 long + 2 short = GPU failure on AMI/Award BIOS. Reseat the GPU in the PCIe slot. Check the PCIe power connectors. Try a different PCIe slot.'},
+  {label:'3 short beeps',pattern:[{t:'s'},{t:'g'},{t:'s'},{t:'g'},{t:'s'}],q:'Three short beeps at POST on an AMI BIOS system. Which component is failing?',opts:['Storage drive not detected','GPU artifacts — overheating','RAM failure (AMI code for memory error)','Chipset temperature warning'],answer:2,explain:'Three beeps on AMI BIOS = memory error. This is the most commonly tested beep code. Reseat RAM. Test one stick at a time. Check slot compatibility.'},
+  {label:'No beeps + no display',pattern:[],q:'System powers on — fans spin — but NO beeps and NO display. What is the most likely cause?',opts:['Hard drive failure','RAM or CPU failure preventing POST — no beep speaker or dead POST','BIOS needs update','Operating system corrupted'],answer:1,explain:'No beeps + no display = system failed before POST audio. Either no beep speaker is connected, or the failure is so early (CPU, RAM, PSU) that the BIOS cannot generate beep codes. Check RAM first.'},
+];
+
+let beepIdx=0,beepAnswered=false,beepCtx=null;
+
+function buildBeepPiano(){
+  const list=document.getElementById('beep-list');if(!list||list.innerHTML.trim())return;
+  BEEPS.forEach((b,i)=>{
+    const row=document.createElement('div');row.className='beep-row';row.id='brow-'+i;
+    let visHtml='';
+    b.pattern.forEach(p=>{
+      if(p.t==='l') visHtml+=`<div class="bl" style="width:28px"></div>`;
+      else if(p.t==='s') visHtml+=`<div class="bs" style="width:12px"></div>`;
+      else if(p.t==='g') visHtml+=`<div style="width:8px"></div>`;
+    });
+    if(!visHtml) visHtml=`<span style="font-family:'DM Mono',monospace;font-size:0.6em;color:var(--dim);letter-spacing:1px">SILENCE</span>`;
+    row.innerHTML=`<div class="beep-play">▶</div><div class="beep-vis">${visHtml}</div><div class="beep-desc-label">${b.label}</div>`;
+    row.onclick=()=>playBeep(i,row,b.pattern);
+    list.appendChild(row);
+  });
+  renderBeepQ();
+}
+
+function playBeep(i,row,pattern){
+  document.querySelectorAll('.beep-row').forEach(r=>r.classList.remove('playing'));
+  row.classList.add('playing');
+  if(!beepCtx) try{beepCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){return;}
+  let t=beepCtx.currentTime+0.1;
+  pattern.forEach(p=>{
+    if(p.t==='l'||p.t==='s'){
+      const dur=p.t==='l'?0.55:0.18;
+      const osc=beepCtx.createOscillator();const gain=beepCtx.createGain();
+      osc.connect(gain);gain.connect(beepCtx.destination);
+      osc.frequency.value=880;osc.type='square';
+      gain.gain.setValueAtTime(0.18,t);
+      osc.start(t);osc.stop(t+dur);
+      gain.gain.setValueAtTime(0.18,t);gain.gain.linearRampToValueAtTime(0,t+dur);
+      t+=dur+0.08;
+    } else if(p.t==='g'){t+=0.22;}
+  });
+  setTimeout(()=>row.classList.remove('playing'),(t-beepCtx.currentTime)*1000+200);
+}
+
+function renderBeepQ(){
+  if(beepIdx>=BEEPS.length){
+    document.getElementById('beep-q-wrap').innerHTML=`<div style="text-align:center;padding:16px;"><div style="font-family:'Orbitron',sans-serif;font-size:1em;font-weight:800;color:var(--mint)">ALL PATTERNS COMPLETE</div><div style="font-size:0.78em;color:var(--dim2);margin:6px 0">${S.bR} correct · ${S.bW} wrong</div><button class="beep-next" style="display:inline-block" onclick="restartBeep()">RESTART</button></div>`;
+    return;
+  }
+  const b=BEEPS[beepIdx];beepAnswered=false;
+  document.getElementById('beep-q-wrap').innerHTML=`
+    <div class="beep-q-lbl">Pattern ${beepIdx+1} of ${BEEPS.length} — Click ▶ to hear, then answer</div>
+    <div class="beep-q-text">${b.q}</div>
+    <div class="beep-opts">${b.opts.map((o,i)=>`<button class="beep-opt" id="bopt-${i}" onclick="answerBeep(${i})">${o}</button>`).join('')}</div>`;
+  document.getElementById('beep-fb').className='beep-fb';
+  document.getElementById('beep-fb').style.display='none';
+  document.getElementById('beep-next').style.display='none';
+}
+
+function answerBeep(i){
+  if(beepAnswered)return;beepAnswered=true;
+  const b=BEEPS[beepIdx];const ok=i===b.answer;
+  if(ok)S.bR++;else S.bW++;save();updateTP();
+  document.querySelectorAll('.beep-opt').forEach((btn,j)=>{btn.classList.add('disabled');if(j===b.answer)btn.classList.add('correct');else if(j===i)btn.classList.add('wrong');});
+  const fb=document.getElementById('beep-fb');
+  fb.innerHTML=`<strong>${ok?'✅ Correct!':'✗ Incorrect — '+b.opts[b.answer]}</strong> ${b.explain}`;
+  fb.className='beep-fb '+(ok?'win':'lose');fb.style.display='block';
+  document.getElementById('beep-next').style.display='inline-block';
+}
+function nextBeep(){beepIdx++;renderBeepQ();}
+function restartBeep(){beepIdx=0;renderBeepQ();}
+
+// ═══ MICRO QUIZ DATA ═══
+const MQ=[
+  {q:'A PC shows no display and the technician hears 3 short beeps at startup. What should be done first?',opts:['Replace the GPU','Reseat the RAM modules','Reinstall the operating system','Replace the PSU'],answer:1,explain:'3 short beeps on AMI BIOS = RAM error. Reseat first — always. Never replace before reseating.',trap:'Exam trap: GPU beep = 1 long + 2 short. 3 short = RAM.'},
+  {q:'A user\'s computer randomly shuts down after 15-20 minutes, especially when playing games. No BSOD. What is most likely?',opts:['RAM failure causing crash','PSU wattage too low','CPU or GPU overheating triggering thermal shutdown','Hard drive failing'],answer:2,explain:'Load-dependent shutdown with no BSOD = thermal. Full load = max heat. CPU/GPU hit thermal limit = emergency shutdown to protect hardware.',trap:'Exam trap: No BSOD = not RAM. Thermal shutdowns are clean — no error screen.'},
+  {q:'A technician replaces a dead hard drive but the new drive is not detected in BIOS. What should be checked first?',opts:['Update BIOS firmware','Check SATA data cable and power connector','Run chkdsk on the new drive','Change boot order in BIOS'],answer:1,explain:'Drive not in BIOS = cable problem before drive problem. Always check physical connections first. Try different cable, different SATA port.',trap:'Exam trap: Boot order only matters if the drive IS detected. If not in BIOS at all, it\'s a cable or power issue.'},
+  {q:'A user reports that their computer\'s date and time reset to defaults every time they shut down. What needs to be replaced?',opts:['The PSU battery backup','The CMOS battery (CR2032)','The system RAM','The operating system'],answer:1,explain:'CMOS battery maintains BIOS settings when power is off. When it dies, settings including date/time are lost on every shutdown. $3 CR2032 replacement fixes this.',trap:'This is a very common exam question. CMOS = settings memory. Dead CMOS battery = "CMOS checksum error" on startup.'},
+  {q:'After installing a discrete GPU, the user plugs the monitor into the motherboard\'s HDMI port. The screen is black. Why?',opts:['The GPU driver needs to be installed first','HDMI cable is faulty','With a discrete GPU installed, use the GPU\'s ports, not the motherboard ports','The monitor is incompatible'],answer:2,explain:'When a discrete GPU is present, it takes over video output. The motherboard HDMI/DisplayPort is disabled. Plug into the GPU ports on the back of the card.',trap:'One of the most common real-world and exam mistakes. Always check which port the monitor is plugged into first.'},
+  {q:'A BSOD shows "MEMORY_MANAGEMENT" stop error. The system was just upgraded with new RAM. What should be done?',opts:['Reinstall Windows immediately','Run MemTest86 to test the new RAM','Update GPU drivers','Check disk with chkdsk'],answer:1,explain:'MEMORY_MANAGEMENT = RAM hardware fault. MemTest86 runs before Windows and tests RAM directly at hardware level. Run at least 2 full passes.',trap:'Reinstalling Windows will not fix bad RAM — the BSOD will return immediately. Diagnose hardware first.'},
+  {q:'A user hears a loud clicking noise from inside their PC. Performance has been slow. What is the immediate priority?',opts:['Run disk defragmenter to fix file system','Back up all data immediately — HDD is failing','Reseat RAM modules','Clean the CPU fan'],answer:1,explain:'Clicking = HDD mechanical failure (click of death). Data loss is imminent. Back up NOW before the drive fails completely. Then replace the drive.',trap:'NEVER run defrag on a clicking drive. Extra read/write activity accelerates the failure and can cause complete data loss before backup.'},
+  {q:'After installing a new CPU cooler, the system continuously shuts down after 2 minutes of use. The fan is spinning. What is most likely?',opts:['The PSU is underpowered','Thermal paste was not applied between CPU and heatsink','The RAM is incompatible with the new cooler','Boot order needs to be updated'],answer:1,explain:'No thermal paste (or incorrectly applied paste) = CPU cannot transfer heat to heatsink = instant overheating = rapid thermal shutdown.',trap:'Exam trap: The fan IS spinning, so it\'s not a fan problem. Thermal paste is the missing link between CPU and heatsink.'},
+];
+
+let mqState={idx:0,right:0,wrong:0,answered:false,shuffled:[...MQ].sort(()=>Math.random()-0.5)};
+
+function renderMQ(){
+  const c=document.getElementById('mq-wrap');if(!c)return;
+  if(mqState.idx>=mqState.shuffled.length){
+    const pct=Math.round(mqState.right/(mqState.right+mqState.wrong||1)*100);
+    c.innerHTML=`<div class="mq-complete"><div class="mq-pct">${pct}%</div><div style="font-size:0.84em;color:var(--dim2);margin:5px 0">${mqState.right} correct · ${mqState.wrong} wrong</div><button class="mq-restart" onclick="restartMQ()">RESTART</button></div>`;
+    return;
+  }
+  const q=mqState.shuffled[mqState.idx];mqState.answered=false;
+  c.innerHTML=`<div class="mq-score-row">
+    <span class="mq-score-label">Q <span>${mqState.idx+1}</span>/${mqState.shuffled.length}</span>
+    <span class="mq-score-label">✓ <span style="color:var(--mint)">${mqState.right}</span></span>
+    <span class="mq-score-label">✗ <span style="color:var(--magenta)">${mqState.wrong}</span></span>
+  </div>
+  <div class="mq-q">${q.q}</div>
+  <div class="mq-opts">${q.opts.map((o,i)=>`<button class="mq-opt" id="mqo-${i}" onclick="answerMQ(${i})"><div class="mq-ltr">${'ABCD'[i]}</div>${o}</button>`).join('')}</div>
+  <div class="mq-fb" id="mq-fb"></div>
+  <button class="mq-next" id="mq-next" onclick="nextMQ()">NEXT →</button>`;
+}
+
+function answerMQ(i){
+  if(mqState.answered)return;mqState.answered=true;
+  const q=mqState.shuffled[mqState.idx];const ok=i===q.answer;
+  if(ok)mqState.right++;else mqState.wrong++;
+  S.mqR=mqState.right;S.mqW=mqState.wrong;save();
+  q.opts.forEach((_,j)=>{const b=document.getElementById('mqo-'+j);b.classList.add('disabled');if(j===q.answer)b.classList.add('correct');else if(j===i)b.classList.add('wrong');});
+  const fb=document.getElementById('mq-fb');
+  fb.innerHTML=`<strong>${ok?'✅ Correct!':'✗ '+q.opts[q.answer]}</strong> — ${q.explain}${q.trap?`<div class="mq-trap">★ Trap: ${q.trap}</div>`:''}`;
+  fb.className='mq-fb '+(ok?'win':'lose');fb.classList.add('show');
+  document.getElementById('mq-next').style.display='inline-block';
+}
+function nextMQ(){mqState.idx++;renderMQ();}
+function restartMQ(){mqState={idx:0,right:0,wrong:0,answered:false,shuffled:[...MQ].sort(()=>Math.random()-0.5)};renderMQ();}
+
+// ═══ PATTERN BAR ═══
+const PATS=[
+  {s:'No power',f:'PSU/cable',c:'var(--rose)'},{s:'No POST',f:'RAM first',c:'var(--magenta)'},
+  {s:'Beep codes',f:'RAM or GPU',c:'var(--lavender)'},{s:'No display',f:'Reseat RAM',c:'var(--violet)'},
+  {s:'Clicking HDD',f:'Replace NOW',c:'var(--amber)'},{s:'Shutdown/load',f:'Overheating',c:'var(--rose)'},
+  {s:'BSOD',f:'Driver/RAM',c:'var(--magenta)'},{s:'Burning smell',f:'Unplug!',c:'var(--amber)'},
+  {s:'Safe mode OK',f:'Driver issue',c:'var(--mint)'},{s:'CMOS reset',f:'CR2032 battery',c:'var(--dim2)'},
+];
+function buildPatBar(){
+  const b=document.getElementById('pattern-bar');if(!b||b.innerHTML.trim())return;
+  b.innerHTML='<div class="pb-label">Quick Pattern Library</div>';
+  PATS.forEach(p=>{const s=document.createElement('div');s.className='pat';s.style.cssText=`color:${p.c};border-color:${p.c}40;background:${p.c}10;`;s.textContent=`${p.s} → ${p.f}`;b.appendChild(s);});
+}
+
+// ═══ TRAINER ═══
+const SCENARIOS=[
+  {symptom:'A user turns on their PC. The fans spin for 2 seconds then everything shuts off. No display, no beeps.',
+   phases:[
+     {q:'What is the FIRST question to ask?',opts:['Did you reinstall Windows recently?','What changed recently — new hardware, moved the PC, updated drivers?','Is the monitor plugged in correctly?','Did you update any software?'],answer:1,note:'<strong>"What changed?"</strong> is always the first diagnostic question. New hardware or a moved cable is often the culprit.',trap:'Windows reinstall cannot cause hardware to shut off in 2 seconds. This is a power issue.'},
+     {q:'Fans spin then instant shutdown — which stage of the chain failed?',opts:['OS Load — corrupted Windows','Apps — software crash','Power — PSU failing or short circuit','Boot — storage not found'],answer:2,note:'Never reached POST. Immediate shutdown = Power stage. PSU is providing some voltage but failing under load or has a protection circuit tripping.',trap:'Cannot be Windows or drivers if it never reaches POST.'},
+     {q:'Best first action?',opts:['Reinstall Windows','Reseat RAM','Check PSU connections and test with known-good PSU','Run chkdsk'],answer:2,note:'Immediate shutdown = PSU suspect #1. Check 24-pin ATX and 8-pin CPU power connectors first. Test with multimeter or swap PSU.',trap:null},
+   ],chain:['Instant Shutdown','Power Stage','PSU Failure','Check Connectors → Test PSU']},
+  {symptom:'Computer powers on, fans spin normally, monitor shows nothing. Three short beeps are heard at startup.',
+   phases:[
+     {q:'Three short beeps at POST — what component is flagged?',opts:['Storage drive failure','RAM failure (AMI BIOS)','GPU signal lost','CPU overheating'],answer:1,note:'AMI BIOS: 3 short beeps = memory error. POST runs memory check early. Beep codes are the BIOS\'s only way to communicate before video initializes.',trap:'Storage is not checked until after RAM/CPU pass POST. 3 beeps is never a storage issue.'},
+     {q:'Correct first action?',opts:['Replace RAM immediately','Reseat RAM — test one stick at a time','Boot to Safe Mode','Run Windows Memory Diagnostic'],answer:1,note:'Always reseat before replacing. Oxidation, wrong slot, or partial seating causes most RAM failures. Test one stick in slot A2.',trap:'Windows Memory Diagnostic requires booting Windows. 3 beeps means it never got to Windows — cannot run software tools yet.'},
+     {q:'Reseating did not fix it. Same 3 beeps. What next?',opts:['Replace motherboard','Replace CPU','Test each stick individually in slot A2','Update GPU drivers'],answer:2,note:'Test each stick in the primary slot (A2). If one stick works, the other is bad. If neither works in any slot, then suspect motherboard RAM slots.',trap:null},
+   ],chain:['No Display + 3 Beeps','POST Stage','RAM Failure','Reseat → Test Individual Sticks']},
+  {symptom:'A user\'s PC randomly shuts off after 20-30 minutes of gaming. No BSOD. Restarts fine and shuts off again.',
+   phases:[
+     {q:'Random shutdown under gaming load — what category?',opts:['Storage failure','Driver/software crash','Thermal — overheating shutdown','Power supply failure'],answer:2,note:'Gaming = max CPU/GPU load = max heat. Systems thermally shutdown to protect hardware. No BSOD = clean shutdown = thermal protection triggered.',trap:'Driver crashes produce BSOD. Storage failures cause boot errors. No BSOD = thermal shutdown, not software.'},
+     {q:'Which component is most likely causing it?',opts:['RAM overheating','PSU thermal failure','CPU or GPU exceeding safe temperature threshold','Hard drive temperature'],answer:2,note:'CPU and GPU generate the most heat. Both have emergency thermal shutdown protection at ~95-105°C. Heavy gaming pushes both components to maximum.',trap:'RAM and HDDs rarely cause thermal shutdowns at gaming temperatures. PSU is possible but secondary suspect.'},
+     {q:'Correct fix sequence?',opts:['Replace CPU immediately','Format and reinstall Windows','Clean dust from heatsink and fans → check thermal paste → verify fan spins → monitor temps','Replace the PSU'],answer:2,note:'Always clean and verify before replacing. Dust blocks airflow. Dried thermal paste loses conductivity. Check CPU temps in BIOS Hardware Monitor — >90°C at idle is a problem.',trap:null},
+   ],chain:['Shutdown Under Load','Thermal Stage','CPU/GPU Overheating','Clean → Reapply Paste → Monitor Temps']},
+  {symptom:'A technician hears a loud clicking noise from inside a PC tower. The system is slow and sometimes freezes.',
+   phases:[
+     {q:'Clicking noise from inside the PC — what does this always indicate?',opts:['CPU fan bearing failing','HDD mechanical failure — read/write head problem','SSD read error','RAM timing issue'],answer:1,note:'Clicking from an HDD = read/write head failing to park or seek correctly. This is the "click of death." It indicates imminent complete failure. This is a critical emergency.',trap:'SSDs have NO moving parts — they cannot click. If you hear clicking, it is ALWAYS a mechanical HDD. Never confuse these.'},
+     {q:'What is the IMMEDIATE priority?',opts:['Run disk defragmenter','Back up all data immediately before any repairs','Reinstall Windows','Replace RAM'],answer:1,note:'Data recovery becomes impossible once the drive fails completely. Back up NOW. The drive could fail on the very next boot. Every minute matters.',trap:'NEVER run defrag on a clicking drive. The extra read/write cycles will accelerate failure and could destroy data before you can back it up.'},
+     {q:'After backup, what is the correct repair?',opts:['Format and reuse the clicking HDD','Replace HDD — consider upgrading to SSD','Run SMART diagnostic only and monitor','Reseat SATA cable and see if clicking stops'],answer:1,note:'A clicking HDD cannot be repaired. Replace it. Migrating to an SSD is the best upgrade — faster, silent, no moving parts, and much more reliable.',trap:null},
+   ],chain:['Clicking Noise','Storage Stage','HDD Mechanical Failure','Backup NOW → Replace HDD']},
+  {symptom:'After a Windows update, the system shows a BSOD with error "IRQL_NOT_LESS_OR_EQUAL" and restarts repeatedly.',
+   phases:[
+     {q:'BSOD "IRQL_NOT_LESS_OR_EQUAL" after a Windows update — what category?',opts:['RAM hardware failure','Driver conflict from the Windows update','Hard drive failing','GPU overheating'],answer:1,note:'IRQL_NOT_LESS_OR_EQUAL is a driver-related BSOD — a driver tried to access memory it was not allowed to. A Windows update commonly triggers this by updating drivers.',trap:'MEMORY_MANAGEMENT is the RAM BSOD. IRQL errors = driver access violation, not RAM hardware.'},
+     {q:'System boots normally then BSOD. Safe Mode works. What does this confirm?',opts:['Hardware is completely failed','Driver loaded in normal mode is the culprit','Hard drive is failing','RAM needs replacing'],answer:1,note:'Safe Mode = minimal drivers. Normal mode loads all drivers. If Safe Mode works = a driver loaded only in normal mode is causing the crash. This is diagnostic confirmation.',trap:'Hardware failures crash in BOTH modes. Safe mode working = software/driver cause 100%.'},
+     {q:'What is the correct fix?',opts:['Replace the RAM','Roll back the recent Windows update or the specific driver in Device Manager','Buy a new hard drive','Disable Windows Update permanently'],answer:1,note:'Device Manager → find the device with the updated driver → Properties → Driver → Roll Back Driver. Or use Windows Update → View update history → Uninstall updates.',trap:null},
+   ],chain:['BSOD After Update','OS Load Stage','Driver Conflict','Boot Safe Mode → Rollback Driver/Update']},
+];
+
+let tState={idx:0,phase:0,mode:'study',answered:false,right:0,wrong:0,sc:[...SCENARIOS]};
+
+function setTrainerMode(m,btn){
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  tState.mode=m;
+  document.getElementById('tm-desc').textContent=m==='study'?'Study: explanation shown after each answer':'Exam: no hints — choose the best answer';
+  renderTrainer();
+}
+
+function renderTrainer(){
+  const c=document.getElementById('trainer-card');if(!c)return;
+  if(tState.idx>=tState.sc.length){
+    const pct=Math.round(tState.right/(tState.right+tState.wrong||1)*100);
+    c.innerHTML=`<div class="scenario-card" style="text-align:center;padding:32px 20px;">
+      <div style="font-family:'Orbitron',sans-serif;font-size:1.2em;font-weight:800;color:var(--lavender);margin-bottom:7px;">ALL SCENARIOS COMPLETE</div>
+      <div style="font-size:2.6em;font-weight:700;color:var(--mint);font-family:'Orbitron',sans-serif;margin:10px 0;">${pct}%</div>
+      <div style="font-size:0.86em;color:var(--dim2);margin-bottom:16px;">${tState.right} correct · ${tState.wrong} wrong</div>
+      <button class="sc-next" onclick="restartTrainer()">RESTART</button></div>`;return;
+  }
+  const sc=tState.sc[tState.idx];const ph=sc.phases[tState.phase];
+  c.innerHTML=`<div class="scenario-card">
+    <div class="sc-score-row">
+      <div class="sc-score-item">Scenario <span>${tState.idx+1}</span>/${tState.sc.length}</div>
+      <div class="sc-score-item">✓ <span style="color:var(--mint)">${tState.right}</span></div>
+      <div class="sc-score-item">✗ <span style="color:var(--magenta)">${tState.wrong}</span></div>
+    </div>
+    <div class="phase-steps">
+      ${['1. What Changed?','2. Identify Stage','3. Fix'].map((l,i)=>`
+      <div class="phase-step ${i<tState.phase?'done':i===tState.phase?'active':''}">
+        <div class="phase-num">${i+1}</div>${l}</div>${i<2?'<span style="color:var(--dim);font-size:0.65em">→</span>':''}`).join('')}
+    </div>
+    <div class="sc-report"><div class="sc-report-lbl">User Report</div><div class="sc-report-txt">${sc.symptom}</div></div>
+    <div class="sc-phase-lbl">Phase ${tState.phase+1} — ${['Identify Category','Isolate Stage/Component','Choose Fix'][tState.phase]}</div>
+    <div class="sc-q">${ph.q}</div>
+    <div class="sc-opts">${ph.opts.map((o,i)=>`<button class="sc-opt" id="topt-${i}" onclick="answerT(${i})"><span class="opt-ltr">${'ABCD'[i]}</span>${o}</button>`).join('')}</div>
+    <div class="sc-fb" id="sc-fb"></div>
+    <button class="sc-next" id="sc-nxt" style="display:none" onclick="nextPhase()">${tState.phase<sc.phases.length-1?'NEXT PHASE →':'NEXT SCENARIO →'}</button>
+  </div>`;tState.answered=false;
+}
+
+function answerT(i){
+  if(tState.answered)return;tState.answered=true;
+  const sc=tState.sc[tState.idx];const ph=sc.phases[tState.phase];const ok=i===ph.answer;
+  if(ok)tState.right++;else tState.wrong++;
+  S.tR=tState.right;S.tW=tState.wrong;save();updateTP();
+  ph.opts.forEach((_,j)=>{const b=document.getElementById('topt-'+j);b.classList.add('disabled');if(j===ph.answer)b.classList.add('correct');else if(j===i)b.classList.add('wrong');});
+  const fb=document.getElementById('sc-fb');
+  if(tState.mode==='study'){
+    const cts=['color:var(--magenta);border-color:rgba(217,70,168,0.3);background:rgba(217,70,168,0.07)','color:var(--lavender);border-color:rgba(196,181,253,0.3);background:rgba(196,181,253,0.07)','color:var(--mint);border-color:rgba(78,204,163,0.3);background:rgba(78,204,163,0.07)','color:var(--amber);border-color:rgba(240,165,0,0.3);background:rgba(240,165,0,0.07)'];
+    let html=`<div class="fb-result ${ok?'win':'lose'}">${ok?'✅ Correct!':'✗ Incorrect — correct: '+ph.opts[ph.answer]}</div>`;
+    html+=`<div class="fb-note">${ph.note}</div>`;
+    if(ph.trap) html+=`<div class="fb-trap">★ Exam Trap: ${ph.trap}</div>`;
+    if(tState.phase===sc.phases.length-1){
+      html+=`<div class="chain-trail">${sc.chain.map((t,ci)=>`${ci>0?'<span class="c-arr">→</span>':''}<span class="c-tag" style="${cts[ci%4]}">${t}</span>`).join('')}</div>`;
+    }
+    fb.innerHTML=html;
+  } else {
+    fb.innerHTML=`<div class="fb-result ${ok?'win':'lose'}">${ok?'✅ Correct!':'✗ Incorrect — correct: '+ph.opts[ph.answer]}</div>`;
+  }
+  fb.classList.add('show');document.getElementById('sc-nxt').style.display='';
+}
+function nextPhase(){
+  const sc=tState.sc[tState.idx];
+  if(tState.phase<sc.phases.length-1){tState.phase++;renderTrainer();}
+  else{tState.idx++;tState.phase=0;renderTrainer();}
+}
+function restartTrainer(){tState={idx:0,phase:0,mode:tState.mode,answered:false,right:0,wrong:0,sc:[...SCENARIOS]};renderTrainer();}
+
+// ═══ SYMPTOM LIBRARY ═══
+const SYM_DATA=[
+  {key:'power',label:'⚡ Power',color:'var(--rose)',items:[
+    {sym:'No power — completely dead',cause:'PSU failed or not connected',fix:'Check wall outlet, PSU switch, 24-pin ATX + 8-pin CPU connectors',exam:'Check simplest thing first: outlet, cable, switch.'},
+    {sym:'Turns on then shuts off in 2 sec',cause:'PSU protection trigger or short circuit',fix:'Unplug all non-essential components. Test minimal config.',exam:'Disconnect drives, extra cards. Breadboard test.'},
+    {sym:'Burning smell',cause:'Capacitor failure or PSU internal short',fix:'Unplug IMMEDIATELY. Do not restart. Replace PSU.',exam:'Burning smell = unplug first, always.'},
+    {sym:'Random off under heavy load',cause:'PSU insufficient wattage',fix:'Calculate total TDP. Upgrade PSU. Leave 20% headroom.',exam:'GPU is biggest power draw. Underpowered PSU = instability.'},
+  ]},
+  {key:'post',label:'🧪 POST',color:'var(--magenta)',items:[
+    {sym:'No display, no beeps, fans spin',cause:'RAM failure — most common',fix:'Reseat RAM. Try one stick. Try slot A2.',exam:'RAM = #1 cause of no-POST. Reseat first, always.'},
+    {sym:'Continuous or repeating beeps',cause:'RAM not detected (most vendors)',fix:'Reseat RAM. Replace module.',exam:'Beep code meaning varies by BIOS vendor.'},
+    {sym:'1 long + 2 short beeps',cause:'GPU failure or not seated',fix:'Reseat GPU. Check PCIe power connectors.',exam:'GPU beep code on AMI/Award BIOS.'},
+    {sym:'"Boot device not found"',cause:'Wrong boot order or failed drive',fix:'Enter BIOS → set correct boot device first.',exam:'Check boot order before declaring drive dead.'},
+  ]},
+  {key:'thermal',label:'🌡 Thermal',color:'var(--amber)',items:[
+    {sym:'Shutdown after 15-30 min',cause:'CPU/GPU thermal shutdown',fix:'Clean heatsink, reapply thermal paste, verify fan spins',exam:'Load-dependent = thermal. No BSOD = thermal (not driver).'},
+    {sym:'Stable at idle, crashes under load',cause:'Thermal limit hit at full load only',fix:'Monitor temps in BIOS. >90°C = reapply paste.',exam:'Use HWMonitor or Core Temp for live temperatures.'},
+    {sym:'CPU fan always at 100%',cause:'Actual overheat OR sensor issue',fix:'Check temps first. If normal, fan controller or sensor.',exam:'Fan at 100% with normal temps = sensor problem.'},
+    {sym:'Crashes more in summer',cause:'Ambient temp + old thermal paste',fix:'Clean all dust. Add case fan. Reapply thermal paste.',exam:'Thermal paste lifespan: 3-5 years. Dries out and cracks.'},
+  ]},
+  {key:'storage',label:'💾 Storage',color:'var(--violet)',items:[
+    {sym:'Loud clicking noise',cause:'HDD read/write head failure',fix:'Back up data IMMEDIATELY. Replace HDD.',exam:'Clicking = imminent failure. Never run defrag on clicking HDD.'},
+    {sym:'Drive not detected in BIOS',cause:'SATA cable, power connector, or dead drive',fix:'Swap SATA cable. Check power. Try different SATA port.',exam:'Always check cables before declaring drive dead.'},
+    {sym:'Very slow operations',cause:'HDD degrading or SSD health issue',fix:'Run SMART test (CrystalDiskInfo). Check SSD health.',exam:'Sudden slowdown = degrading drive. Back up first.'},
+    {sym:'Files corrupted or missing',cause:'File system error or bad sectors',fix:'Run chkdsk /f /r. Back up immediately first.',exam:'Back up what you can before running any repair tool.'},
+  ]},
+  {key:'display',label:'🖥 Display',color:'var(--mint)',items:[
+    {sym:'No signal — PC working normally',cause:'Wrong port, wrong cable, wrong monitor input',fix:'Check monitor input. Try different cable. Check correct port.',exam:'Most common cause: monitor input set to wrong source.'},
+    {sym:'Screen artifacts, flickering',cause:'GPU overheating or VRAM failing',fix:'Check GPU temps. Clean GPU fan. Test with another GPU.',exam:'Artifacts = GPU hardware issue (not driver usually).'},
+    {sym:'Works on integrated, not discrete GPU',cause:'Discrete GPU failed',fix:'Test GPU in another PCIe slot or another PC.',exam:'Use integrated GPU to isolate discrete GPU failure.'},
+    {sym:'Black screen after GPU installed',cause:'Monitor plugged into motherboard port',fix:'Plug monitor into GPU ports, not motherboard.',exam:'Most common beginner mistake. GPU ports are on the card itself.'},
+  ]},
+  {key:'os',label:'💻 OS/BSOD',color:'var(--lavender)',items:[
+    {sym:'BSOD: MEMORY_MANAGEMENT',cause:'RAM hardware fault',fix:'Run MemTest86. Remove failing stick.',exam:'This BSOD = RAM. Reinstalling Windows will NOT fix it.'},
+    {sym:'BSOD: IRQL_NOT_LESS_OR_EQUAL',cause:'Driver conflict or corruption',fix:'Rollback recent driver or Windows update.',exam:'IRQL = driver access violation. Safe mode works = driver cause.'},
+    {sym:'Safe mode works, normal crashes',cause:'Driver or startup software',fix:'msconfig → disable startup. Device Manager → rollback driver.',exam:'Safe mode = minimal drivers. Works in safe = software cause.'},
+    {sym:'Repeated restarts, no BSOD',cause:'Thermal shutdown',fix:'Check temps. Clean heatsink. Reapply paste.',exam:'Restart without BSOD = thermal. BSOD = hardware/driver.'},
+  ]},
+];
+
+function buildSymLib(){
+  const cats=document.getElementById('sym-cats');const panels=document.getElementById('sym-panels');
+  if(!cats||cats.innerHTML.trim())return;
+  SYM_DATA.forEach((cat,i)=>{
+    const btn=document.createElement('button');btn.className=`sym-cat-btn${i===0?' active':''}`;
+    if(i===0)btn.style.cssText=`border-color:${cat.color};color:${cat.color};background:${cat.color}10`;
+    btn.textContent=cat.label;
+    btn.onclick=()=>{
+      document.querySelectorAll('.sym-cat-btn').forEach((b,j)=>{b.classList.toggle('active',j===i);b.style.cssText=j===i?`border-color:${cat.color};color:${cat.color};background:${cat.color}10`:''});
+      document.querySelectorAll('.sym-panel').forEach((p,j)=>p.classList.toggle('active',j===i));
+    };
+    cats.appendChild(btn);
+    const panel=document.createElement('div');panel.className=`sym-panel${i===0?' active':''}`;
+    panel.innerHTML=cat.items.map(s=>`<div class="sym-card">
+      <div class="sym-hdr" style="border-left:3px solid ${cat.color}">
+        <div class="sym-symptom">${s.sym}</div>
+        <span class="sym-tag" style="color:${cat.color};border:1px solid ${cat.color}40;background:${cat.color}10">${cat.label}</span>
+      </div>
+      <div class="sym-body">
+        <div class="sym-row"><span class="sym-lbl">CAUSE</span><span class="sym-val"><strong>${s.cause}</strong></span></div>
+        <div class="sym-row"><span class="sym-lbl">FIX</span><span class="sym-val sym-fix">${s.fix}</span></div>
+        <div class="sym-exam"><strong style="color:var(--rose)">★ EXAM:</strong> ${s.exam}</div>
+      </div></div>`).join('');
+    panels.appendChild(panel);
+  });
+}
+
+// ═══ PROGRESS TAB ═══
+const TRAPS=[
+  {t:'No display, fans spin',w:'Replace monitor',c:'Reseat RAM first',why:'RAM = #1 no-POST cause. Monitor rarely fails silently.'},
+  {t:'Clicking noise from PC',w:'RAM issue',c:'HDD mechanical failure',why:'SSDs are silent. Clicking = always HDD. Back up immediately.'},
+  {t:'Shutdown under load',w:'Reinstall Windows',c:'Thermal — clean/repaste',why:'Load-dependent shutdown = heat. Software cannot cause thermal events.'},
+  {t:'Safe Mode works fine',w:'Hardware failure',c:'Driver or startup software',why:'Hardware fails regardless of mode. Software only loads normally.'},
+  {t:'BSOD: MEMORY_MANAGEMENT',w:'Reinstall Windows first',c:'Run MemTest86 on RAM',why:'Windows reinstall will not fix bad RAM — BSOD returns immediately.'},
+  {t:'Boot device not found',w:'Replace the hard drive',c:'Check boot order in BIOS',why:'Boot order is a 30-second BIOS fix. Check before replacing hardware.'},
+  {t:'Date resets every shutdown',w:'Reinstall OS',c:'Replace CMOS battery',why:'CR2032 battery keeps BIOS settings. Dead = settings lost every time.'},
+  {t:'Black screen with new GPU',w:'Faulty GPU',c:'Monitor plugged into wrong port',why:'With GPU installed: use GPU ports, NOT motherboard ports.'},
+];
+
+function buildProgress(){
+  const pc=document.getElementById('prog-card');const tg=document.getElementById('trap-grid');
+  if(!pc||pc.innerHTML.trim())return;
+  const tP=S.tR+S.tW>0?Math.round(S.tR/(S.tR+S.tW)*100):0;
+  const bP=S.bR+S.bW>0?Math.round(S.bR/(S.bR+S.bW)*100):0;
+  const ov=Math.round((S.diagPct+tP+bP)/3);
+  const items=[{l:'Diagram',v:S.diagPct,c:'var(--amber)'},{l:'Trainer',v:tP,c:'var(--mint)'},{l:'Beep Piano',v:bP,c:'var(--violet)'},{l:'Micro Quiz',v:S.mqR+S.mqW>0?Math.round(S.mqR/(S.mqR+S.mqW)*100):0,c:'var(--lavender)'}];
+  pc.innerHTML=`<div class="pb-title">Overall Mastery — ${ov}%</div>
+    ${items.map(it=>{const st=it.v>=80?['STRONG','var(--mint)']:it.v>=50?['REVIEW','var(--rose)']:['WEAK','var(--magenta)'];return`<div class="pb-row"><div class="pb-label" style="color:${it.c}">${it.l}</div><div class="pb-track"><div class="pb-fill" style="width:${it.v}%;background:${it.c}"></div></div><div class="pb-pct" style="color:${it.c}">${it.v}%</div><div class="pb-status" style="color:${st[1]};border-color:${st[1]}40">${st[0]}</div></div>`;}).join('')}`;
+  tg.innerHTML=TRAPS.map(t=>`<div class="trap-card"><div class="trap-lbl">EXAM TRAP</div><div class="trap-symptom">${t.t}</div><div class="trap-wrong">✗ Most pick: ${t.w}</div><div class="trap-correct">✓ Correct: ${t.c}</div><div class="trap-why">${t.why}</div></div>`).join('');
+}
+
+// ═══ WHAT'S DIFFERENT GAME DATA ═══
+const WD_TOPICS=[
+  {key:'no-display',label:'No Display',questions:[
+    {symptom:'No display on monitor',clue:'Fans spin + you hear 3 short beeps',opts:['PSU failed','RAM failure','GPU overheating','Wrong monitor input'],answer:1,
+     why:'3 beeps on AMI BIOS = RAM. POST never completed. RAM failure is the #1 no-display cause with beep codes.',
+     wrong:'GPU beep = 1 long + 2 short, not 3 short. PSU failure = no power at all.'},
+    {symptom:'No display on monitor',clue:'Fans spin + you hear 1 long + 2 short beeps',opts:['RAM failure','CPU overheating','GPU not seated properly','Drive not found'],answer:2,
+     why:'1 long + 2 short = GPU failure on AMI/Award BIOS. Reseat the GPU, check PCIe power connectors.',
+     wrong:'3 short beeps = RAM. 1 long + 2 short is always the GPU beep pattern.'},
+    {symptom:'No display on monitor',clue:'Fans spin, no beeps at all',opts:['Monitor is broken','RAM or CPU — critical early failure','Drive not detected','Windows is corrupted'],answer:1,
+     why:'No beeps + no display = failure before BIOS can even generate beep codes. RAM or CPU failure so severe POST cannot start. Also possible: no beep speaker connected.',
+     wrong:'Windows corruption happens after POST. Drive detection happens after POST. No beeps = pre-POST failure.'},
+    {symptom:'No display on monitor',clue:'System POSTs fine — Windows loads — but screen stays black',opts:['RAM failure','GPU driver crash','Monitor plugged into motherboard HDMI with discrete GPU installed','PSU underpowered'],answer:2,
+     why:'If POST works but Windows goes black: monitor is in the wrong port. With discrete GPU installed, always use GPU ports — not the motherboard ports.',
+     wrong:'If POST completed, RAM is fine. GPU driver crash would show BSOD or glitches, not just black.'},
+  ]},
+  {key:'shutdown',label:'Random Shutdown',questions:[
+    {symptom:'Computer randomly shuts off',clue:'Happens after 20+ minutes, especially during gaming',opts:['PSU dead','RAM failure causing crash','CPU/GPU overheating — thermal shutdown','Hard drive failing'],answer:2,
+     why:'Load + time = heat buildup. CPU/GPU hit thermal limit → emergency shutdown to protect hardware. No BSOD = clean thermal shutdown.',
+     wrong:'PSU dead = no power at all. RAM failure = BSOD with error code. HDD = boot errors, not clean shutdowns.'},
+    {symptom:'Computer randomly shuts off',clue:'Shuts off instantly — no warning, no BSOD, happens anytime',opts:['Driver crash','Thermal shutdown','PSU failing — unstable voltage output','RAM error'],answer:2,
+     why:'Instant shutdown at any time (not load-dependent) = PSU instability. PSU cannot maintain clean voltage → system cuts off to protect components.',
+     wrong:'Thermal = takes 15-30 min to heat up. Driver crash = BSOD. RAM = BSOD with memory error code.'},
+    {symptom:'Computer randomly shuts off',clue:'BSOD appears first, then it restarts',opts:['Thermal shutdown','Driver or RAM causing crash + auto restart','PSU underpowered','Hard drive failing'],answer:1,
+     why:'BSOD before restart = software/hardware crash, not thermal. Check stop code: MEMORY_MANAGEMENT = RAM, IRQL = driver.',
+     wrong:'Thermal shutdowns are CLEAN — no BSOD. A BSOD always indicates a software or memory/driver fault.'},
+  ]},
+  {key:'slow',label:'Slow / Freezing',questions:[
+    {symptom:'Computer is very slow',clue:'You hear a clicking or grinding noise from inside',opts:['RAM filling up','CPU overheating throttle','HDD mechanical failure — imminent drive death','Malware infection'],answer:2,
+     why:'Clicking = HDD read/write head failing (click of death). Slow performance + clicking = drive struggling to read sectors. Back up immediately.',
+     wrong:'RAM, CPU, and malware do not make clicking sounds. Clicking is exclusively mechanical HDD failure.'},
+    {symptom:'Computer is very slow',clue:'System was fast before, no new hardware, no clicking noise',opts:['HDD dying','Background apps, malware, or fragmented drive','RAM failure','GPU overheating'],answer:1,
+     why:'Gradual slowdown on existing hardware without noise = software cause. Run malware scan, check startup apps (msconfig), check HDD fragmentation.',
+     wrong:'HDD dying = usually clicking. RAM failure = BSOD. GPU = display artifacts, not general slowness.'},
+    {symptom:'Computer is very slow',clue:'Temps are fine, but performance drops under CPU load only',opts:['Overheating thermal throttle','Malware','Insufficient RAM for workload','GPU failing'],answer:2,
+     why:'Normal temps + slow under CPU load = RAM bottleneck. Not enough RAM forces Windows to use virtual memory (page file) on slower storage → massive slowdown.',
+     wrong:'If temps are normal, thermal throttle is ruled out. GPU issues show as display problems, not general CPU slowness.'},
+  ]},
+  {key:'power',label:'No Power',questions:[
+    {symptom:'Computer will not turn on at all',clue:'No lights, no fans, nothing — even power button does nothing',opts:['RAM failure','Wrong boot order in BIOS','PSU dead or 24-pin ATX connector not seated','GPU overheating protection'],answer:2,
+     why:'Absolutely nothing = no power reaching the board at all. Check wall outlet, PSU switch, then 24-pin ATX connector. PSU may be dead.',
+     wrong:'RAM failure = fans spin but no POST. Boot order only matters after POST. GPU issues = display problems, not no power.'},
+    {symptom:'Computer will not turn on at all',clue:'Fans spin for 2 seconds then everything dies',opts:['Normal behavior','PSU protection trigger or short circuit','RAM too slow for motherboard','Windows boot failure'],answer:1,
+     why:'Power then immediate off = PSU protection circuit tripping. Something is shorting (check standoffs, loose screws) or PSU is failing under load.',
+     wrong:'2-second fan spin then off is never normal. Windows cannot load in 2 seconds — this failure is at the power stage, before any software.'},
+    {symptom:'Computer will not turn on at all',clue:'24-pin is connected, but you forgot to plug in the 8-pin CPU power connector',opts:['System will boot slowly','System will not POST — fans may spin but no display','BIOS will give a warning and continue','No effect — only 24-pin is required'],answer:1,
+     why:'The 8-pin CPU power connector powers the CPU voltage regulators (VRM). Without it, CPU gets no power → no POST. Fans may spin since they run off the 24-pin rail.',
+     wrong:'The 8-pin is required for CPU power. The system will NOT boot without it. This is a very common build mistake.'},
+  ]},
+  {key:'bsod',label:'BSOD',questions:[
+    {symptom:'Blue Screen of Death',clue:'Stop code: MEMORY_MANAGEMENT',opts:['GPU driver crash','RAM hardware fault','Hard drive failing','Overheating CPU'],answer:1,
+     why:'MEMORY_MANAGEMENT = RAM hardware error. Run MemTest86. Reinstalling Windows will NOT fix this — the BSOD returns immediately.',
+     wrong:'GPU driver = TDR_FAILURE or nvlddmkm. Overheating = random shutdown, not BSOD. HDD = PAGE_FAULT_IN_NONPAGED_AREA.'},
+    {symptom:'Blue Screen of Death',clue:'Stop code: IRQL_NOT_LESS_OR_EQUAL — happened after Windows Update',opts:['RAM hardware fault','Hard drive dying','Driver conflict from the update','GPU overheating'],answer:2,
+     why:'IRQL = driver tried to access restricted memory = driver access violation. Windows Update commonly triggers this by updating drivers. Rollback the update or driver.',
+     wrong:'MEMORY_MANAGEMENT = RAM. IRQL is always a driver issue, not hardware failure.'},
+    {symptom:'Blue Screen of Death',clue:'System works perfectly in Safe Mode',opts:['RAM is faulty','Hardware component failed','Driver or startup software loaded in normal mode','Hard drive failing'],answer:2,
+     why:'Safe Mode loads minimal drivers. If Safe Mode works, hardware is fine — a driver or startup app loaded only in normal mode is the culprit.',
+     wrong:'If hardware were truly failed, Safe Mode would also crash. Hardware failures do not discriminate between boot modes.'},
+  ]},
+];
+
+let wdState={topicIdx:0,qIdx:0,right:0,wrong:0,answered:false};
+
+function buildWDGame(){
+  const wrap=document.getElementById('wd-game');if(!wrap||wrap.innerHTML.trim())return;
+  const w=document.createElement('div');w.className='wd-wrap';
+  // topic tabs
+  const tabs=document.createElement('div');tabs.className='wd-topic-tabs';
+  WD_TOPICS.forEach((t,i)=>{
+    const btn=document.createElement('button');btn.className='wd-ttab'+(i===0?' active':'');
+    btn.textContent=t.label;btn.onclick=()=>{
+      wdState.topicIdx=i;wdState.qIdx=0;wdState.answered=false;
+      document.querySelectorAll('.wd-ttab').forEach((b,j)=>b.classList.toggle('active',j===i));
+      renderWD();
+    };tabs.appendChild(btn);
+  });
+  w.appendChild(tabs);
+  const body=document.createElement('div');body.id='wd-body';body.className='wd-body';
+  w.appendChild(body);wrap.appendChild(w);
+  renderWD();
+}
+
+function renderWD(){
+  const body=document.getElementById('wd-body');if(!body)return;
+  const topic=WD_TOPICS[wdState.topicIdx];
+  if(wdState.qIdx>=topic.questions.length){
+    body.innerHTML=`<div class="wd-complete">
+      <div class="wd-pct">${Math.round(wdState.right/(wdState.right+wdState.wrong||1)*100)}%</div>
+      <div style="font-size:0.82em;color:var(--dim2);margin:5px 0">${wdState.right} correct · ${wdState.wrong} wrong on ${topic.label}</div>
+      <button class="wd-next" style="display:inline-block;margin-top:8px" onclick="wdState.qIdx=0;renderWD()">RETRY TOPIC</button>
+    </div>`;return;
+  }
+  const q=topic.questions[wdState.qIdx];wdState.answered=false;
+  body.innerHTML=`
+    <div class="wd-score-row">
+      <div class="wd-score-item">Q <span>${wdState.qIdx+1}</span>/${topic.questions.length}</div>
+      <div class="wd-score-item">✓ <span style="color:var(--mint)">${wdState.right}</span></div>
+      <div class="wd-score-item">✗ <span style="color:var(--magenta)">${wdState.wrong}</span></div>
+    </div>
+    <div class="wd-symptom-banner">
+      <div class="wd-symptom-lbl">SYMPTOM</div>
+      <div class="wd-symptom-txt">${q.symptom}</div>
+    </div>
+    <div class="wd-clue-banner">
+      <div class="wd-clue-lbl">EXTRA CLUE — this changes the answer</div>
+      <div class="wd-clue-txt">→ ${q.clue}</div>
+    </div>
+    <div class="wd-opts">${q.opts.map((o,i)=>`<button class="wd-opt" id="wdopt-${i}" onclick="answerWD(${i})"><div class="wd-ltr">${'ABCD'[i]}</div>${o}</button>`).join('')}</div>
+    <div class="wd-fb" id="wd-fb"></div>
+    <button class="wd-next" id="wd-next" onclick="nextWD()">NEXT →</button>`;
+}
+
+function answerWD(i){
+  if(wdState.answered)return;wdState.answered=true;
+  const q=WD_TOPICS[wdState.topicIdx].questions[wdState.qIdx];
+  const ok=i===q.answer;
+  if(ok)wdState.right++;else wdState.wrong++;
+  q.opts.forEach((_,j)=>{const b=document.getElementById('wdopt-'+j);b.classList.add('disabled');if(j===q.answer)b.classList.add('correct');else if(j===i)b.classList.add('wrong');});
+  const fb=document.getElementById('wd-fb');
+  fb.innerHTML=`<strong>${ok?'✅ Correct!':'✗ Incorrect — correct: '+q.opts[q.answer]}</strong> — ${ok?q.why:q.wrong}
+    <div class="wd-why"><strong>Why this clue matters:</strong> ${q.why}</div>`;
+  fb.className='wd-fb '+(ok?'win':'lose');fb.classList.add('show');
+  document.getElementById('wd-next').style.display='inline-block';
+}
+
+function nextWD(){
+  wdState.qIdx++;renderWD();
+}
+
+// ═══ CONFUSION TABLE ═══
+const CONF_ROWS=[
+  {symptom:'No display',clue:'+ 3 short beeps',wrong:'GPU failure',right:'RAM failure — 3 short = memory (AMI BIOS)'},
+  {symptom:'No display',clue:'+ 1 long + 2 short',wrong:'RAM failure',right:'GPU failure — 1L+2S is the GPU beep pattern'},
+  {symptom:'No display',clue:'+ no beeps at all',wrong:'Monitor broken',right:'RAM or CPU pre-POST failure — too early for beeps'},
+  {symptom:'Random shutdown',clue:'+ no BSOD',wrong:'Driver/RAM crash',right:'Thermal — clean shutdowns without BSOD = heat'},
+  {symptom:'Random shutdown',clue:'+ BSOD appears first',wrong:'Overheating',right:'Driver or RAM — BSOD = software/memory crash'},
+  {symptom:'Slow PC + noise',clue:'+ clicking sound',wrong:'RAM issue',right:'HDD mechanical failure — back up immediately'},
+  {symptom:'Black screen',clue:'+ GPU was just installed',wrong:'GPU is defective',right:'Monitor plugged into motherboard port — use GPU ports'},
+  {symptom:'Date resets',clue:'+ every shutdown',wrong:'RAM or OS issue',right:'CMOS battery (CR2032) dead — $3 fix'},
+  {symptom:'BSOD',clue:'+ MEMORY_MANAGEMENT',wrong:'Reinstall Windows',right:'Run MemTest86 — Windows reinstall will NOT fix bad RAM'},
+  {symptom:'BSOD',clue:'+ Safe Mode works',wrong:'Hardware failed',right:'Driver or startup app — hardware failures crash both modes'},
+  {symptom:'No power',clue:'+ fans spin 2 sec then off',wrong:'RAM not seated',right:'PSU protection trigger or short circuit'},
+  {symptom:'No POST',clue:'+ 8-pin CPU not connected',wrong:'No effect — 24-pin enough',right:'No boot — 8-pin powers CPU VRM, required for POST'},
+];
+
+function buildConfTable(){
+  const wrap=document.getElementById('confusion-table');if(!wrap||wrap.innerHTML.trim())return;
+  wrap.innerHTML=`<table class="conf-table">
+    <thead><tr>
+      <th style="color:var(--text);text-align:left">Symptom</th>
+      <th style="color:var(--amber);text-align:left">Extra Clue</th>
+      <th style="color:var(--magenta);text-align:left">Most Pick (Wrong)</th>
+      <th style="color:var(--mint);text-align:left">Correct Answer</th>
+    </tr></thead>
+    <tbody>${CONF_ROWS.map(r=>`<tr>
+      <td class="conf-symptom">${r.symptom}</td>
+      <td class="conf-clue">${r.clue}</td>
+      <td class="conf-wrong">${r.wrong}</td>
+      <td class="conf-right">${r.right}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+// ═══ INIT ═══
+buildSVG();
+buildPatBar();
+buildBeepPiano();
+renderMQ();
+buildSymLib();
+buildWDGame();
+buildConfTable();
+buildProgress();
+renderTrainer();
+for(let i=0;i<4;i++) setTimeout(()=>buildSB('sb-'+i),200);
+</script>
+</body>
+</html>
