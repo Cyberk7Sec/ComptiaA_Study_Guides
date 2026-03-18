@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CompTIA A+ | Virtualization + Cloud | Tactical Study Page</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #0f1117;
+    --surface2: #1a1d2e;
+    --surface3: #12151f;
+    --cyan: #00d4ff;
+    --cyan-dim: rgba(0,212,255,0.15);
+    --gold: #ffd700;
+    --gold-dim: rgba(255,215,0,0.12);
+    --orange: #f97316;
+    --green: #22c55e;
+    --red: #ef4444;
+    --purple: #a855f7;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --border: rgba(0,212,255,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  /* ── NAV ── */
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.97);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .top-nav::-webkit-scrollbar { display: none; }
+
+  .nav-brand {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    color: var(--cyan);
+    letter-spacing: 2px;
+    padding: 12px 12px 12px 0;
+    border-right: 1px solid var(--border);
+    margin-right: 8px;
+    white-space: nowrap;
+  }
+
+  .nav-tab {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    padding: 10px 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    white-space: nowrap;
+    transition: all 0.2s;
+    background: none;
+    border: none;
+    text-transform: uppercase;
+  }
+  .nav-tab:hover { color: var(--cyan); background: var(--cyan-dim); }
+  .nav-tab.active { color: var(--cyan); background: var(--cyan-dim); border-bottom: 2px solid var(--cyan); }
+
+  .score-btn {
+    margin-left: auto;
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    background: var(--gold-dim);
+    border: 1px solid rgba(255,215,0,0.3);
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .score-btn:hover { background: rgba(255,215,0,0.2); }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 20px;
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .progress-bar::-webkit-scrollbar { display: none; }
+
+  .prog-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .prog-check {
+    width: 14px; height: 14px;
+    border: 1px solid var(--muted);
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    transition: all 0.2s;
+  }
+  .prog-check.done { background: var(--green); border-color: var(--green); color: #000; }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 40px 20px 20px;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(0,212,255,0.04) 0%, transparent 100%);
+  }
+  .hero-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--cyan);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .hero-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(22px, 5vw, 44px);
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .hero-title span { color: var(--cyan); }
+  .hero-subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'Share Tech Mono', monospace;
+    margin-bottom: 24px;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .stat-pill {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text);
+  }
+  .stat-pill.red { border-color: rgba(239,68,68,0.4); color: var(--red); }
+  .stat-pill.gold { border-color: rgba(255,215,0,0.3); color: var(--gold); }
+
+  /* ── PRIORITY STRIP ── */
+  .priority-strip {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+  .priority-strip::-webkit-scrollbar { display: none; }
+  .pri-item {
+    flex: 1;
+    min-width: 140px;
+    padding: 12px 16px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+    background: var(--surface3);
+  }
+  .pri-item:last-child { border-right: none; }
+  .pri-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--orange);
+    margin-bottom: 4px;
+  }
+  .pri-name {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text);
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    max-width: 1100px;
+    margin: 0 auto 48px;
+    padding: 0 20px;
+    scroll-margin-top: 60px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--cyan);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .section-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+  }
+  .badge-hot { background: rgba(249,115,22,0.2); color: var(--orange); border: 1px solid rgba(249,115,22,0.3); }
+  .badge-test { background: rgba(255,215,0,0.1); color: var(--gold); border: 1px solid rgba(255,215,0,0.3); }
+
+  /* ── CARDS GRID ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+  }
+  .card-icon { font-size: 22px; margin-bottom: 8px; }
+  .card-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    color: var(--cyan);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .card ul { list-style: none; }
+  .card li {
+    font-size: 13px;
+    color: var(--text);
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    line-height: 1.5;
+  }
+  .card li:last-child { border-bottom: none; }
+  .card li::before { content: '› '; color: var(--cyan); }
+
+  /* ── COMPARISON CARDS ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 600px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  .compare-card {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 18px;
+    border-top: 3px solid;
+  }
+  .compare-card.blue { border-color: var(--cyan); }
+  .compare-card.gold { border-color: var(--gold); }
+
+  .compare-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .compare-card.blue .compare-title { color: var(--cyan); }
+  .compare-card.gold .compare-title { color: var(--gold); }
+
+  .compare-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text);
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    line-height: 1.5;
+  }
+  .compare-item:last-child { border-bottom: none; }
+  .dot-blue { color: var(--cyan); font-size: 16px; line-height: 1; flex-shrink: 0; }
+  .dot-gold { color: var(--gold); font-size: 16px; line-height: 1; flex-shrink: 0; }
+  .tag-row {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px;
+  }
+  .tag {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-family: 'Share Tech Mono', monospace;
+    background: rgba(0,212,255,0.1);
+    color: var(--cyan);
+    border: 1px solid rgba(0,212,255,0.2);
+  }
+
+  /* ── EXAM TRAP BOX ── */
+  .trap-box {
+    background: rgba(255,215,0,0.06);
+    border: 1px solid rgba(255,215,0,0.35);
+    border-left: 4px solid var(--gold);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+  .trap-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+  .trap-item {
+    font-size: 13px;
+    color: var(--text);
+    padding: 5px 0;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    line-height: 1.5;
+  }
+  .trap-icon { color: var(--gold); flex-shrink: 0; }
+
+  /* ── MNEMONIC BOX ── */
+  .mnemonic-box {
+    background: rgba(168,85,247,0.08);
+    border: 1px solid rgba(168,85,247,0.3);
+    border-left: 4px solid var(--purple);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+  .mnemonic-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    color: var(--purple);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .mnemonic-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: #d8b4fe;
+    font-style: italic;
+    line-height: 1.7;
+  }
+
+  /* ── MOST TESTED BOX ── */
+  .tested-box {
+    background: rgba(255,215,0,0.05);
+    border: 1px solid rgba(255,215,0,0.2);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+  .tested-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+
+  /* ── DRILL QUESTION ── */
+  .drill-question {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+  }
+  .drill-q-text {
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.6;
+  }
+  .drill-options { display: flex; flex-direction: column; gap: 8px; }
+  .drill-option {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+  .drill-option:hover { border-color: var(--cyan); color: var(--text); }
+  .drill-option.correct { background: rgba(34,197,94,0.15); border-color: var(--green); color: var(--green); }
+  .drill-option.wrong { background: rgba(239,68,68,0.1); border-color: var(--red); color: var(--red); }
+  .drill-option.reveal { background: rgba(34,197,94,0.08); border-color: rgba(34,197,94,0.3); color: var(--green); }
+
+  .reveal-btn {
+    background: none;
+    border: 1px dashed rgba(0,212,255,0.3);
+    color: var(--cyan);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.2s;
+  }
+  .reveal-btn:hover { background: var(--cyan-dim); }
+
+  .answer-reveal {
+    background: rgba(34,197,94,0.08);
+    border: 1px solid rgba(34,197,94,0.2);
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--green);
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+
+  /* ── CONFIDENCE BUTTONS ── */
+  .confidence-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .conf-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    padding: 7px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid;
+    transition: all 0.2s;
+    background: none;
+  }
+  .conf-btn.got { border-color: var(--green); color: var(--green); }
+  .conf-btn.got:hover, .conf-btn.got.active { background: rgba(34,197,94,0.2); }
+  .conf-btn.shaky { border-color: var(--gold); color: var(--gold); }
+  .conf-btn.shaky:hover, .conf-btn.shaky.active { background: rgba(255,215,0,0.15); }
+  .conf-btn.nope { border-color: var(--red); color: var(--red); }
+  .conf-btn.nope:hover, .conf-btn.nope.active { background: rgba(239,68,68,0.15); }
+
+  /* ── ACCORDION ── */
+  .accordion {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: var(--surface2);
+    cursor: pointer;
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    color: var(--cyan);
+    letter-spacing: 2px;
+    transition: background 0.2s;
+  }
+  .accordion-header:hover { background: #1e2238; }
+  .accordion-arrow { transition: transform 0.3s; color: var(--muted); }
+  .accordion-header.open .accordion-arrow { transform: rotate(180deg); }
+  .accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    background: var(--surface);
+  }
+  .accordion-body.open { max-height: 800px; }
+  .accordion-inner { padding: 20px; }
+
+  /* ── REF TABLE ── */
+  .ref-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .ref-table th {
+    text-align: left;
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--cyan);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 12px;
+    text-transform: uppercase;
+  }
+  .ref-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+  }
+  .ref-table tr:hover td { background: rgba(0,212,255,0.03); }
+
+  /* ── SVG FLOW DIAGRAMS ── */
+  .flow-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+  }
+
+  /* ── BOTTOM BAR ── */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(10,10,15,0.97);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    padding: 10px 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    z-index: 100;
+  }
+  .bar-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  .bar-btn.weakness { background: rgba(239,68,68,0.2); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .bar-btn.drill { background: rgba(255,215,0,0.1); color: var(--gold); border: 1px solid rgba(255,215,0,0.3); }
+  .bar-btn.reset { background: rgba(148,163,184,0.1); color: var(--muted); border: 1px solid rgba(148,163,184,0.2); }
+
+  .bar-progress {
+    margin-left: auto;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .bar-progress span { color: var(--cyan); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .modal-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    color: var(--cyan);
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+  .modal-close {
+    float: right;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 20px;
+    cursor: pointer;
+    margin-top: -4px;
+  }
+  .modal-item {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 13px;
+    color: var(--text);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    line-height: 1.5;
+  }
+  .modal-item-icon { color: var(--red); flex-shrink: 0; }
+
+  /* ── CLASSIFICATION GRID ── */
+  .class-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .class-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .class-item:hover { border-color: var(--cyan); }
+  .class-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    color: var(--cyan);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .class-name {
+    font-size: 12px;
+    color: var(--gold);
+    font-family: 'Share Tech Mono', monospace;
+    margin-bottom: 6px;
+  }
+  .class-desc {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .class-item.flipped .class-desc { color: var(--text); }
+
+  /* ── SVG ANIMATIONS ── */
+  @keyframes dash {
+    to { stroke-dashoffset: -20; }
+  }
+  .flow-arrow {
+    stroke-dasharray: 6 4;
+    stroke-dashoffset: 0;
+    animation: dash 1s linear infinite;
+  }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 32px 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <div class="nav-brand">A+ CORE 1</div>
+  <button class="nav-tab active" onclick="scrollTo('sec-vsec')">🔐 VM SECURITY</button>
+  <button class="nav-tab" onclick="scrollTo('sec-host')">🖥️ HOST REQ</button>
+  <button class="nav-tab" onclick="scrollTo('sec-ps')">⚡ POWERSHELL</button>
+  <button class="nav-tab" onclick="scrollTo('sec-models')">☁️ CLOUD MODELS</button>
+  <button class="nav-tab" onclick="scrollTo('sec-deploy')">🗺️ DEPLOYMENT</button>
+  <button class="nav-tab" onclick="scrollTo('sec-char')">📈 CHARACTERISTICS</button>
+  <button class="nav-tab" onclick="scrollTo('sec-traps')">⚡ TRAPS</button>
+  <button class="score-btn" onclick="this.textContent='🔴 EXAM TODAY'">NET 2.3 · B8</button>
+</nav>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar" id="progressBar">
+  <div class="prog-item" onclick="toggleProgress(0)">
+    <div class="prog-check" id="prog0">✓</div>
+    🔐 VM Security
+  </div>
+  <div class="prog-item" onclick="toggleProgress(1)">
+    <div class="prog-check" id="prog1"></div>
+    🖥️ Host Req
+  </div>
+  <div class="prog-item" onclick="toggleProgress(2)">
+    <div class="prog-check" id="prog2"></div>
+    ⚡ PowerShell
+  </div>
+  <div class="prog-item" onclick="toggleProgress(3)">
+    <div class="prog-check" id="prog3"></div>
+    ☁️ Service Models
+  </div>
+  <div class="prog-item" onclick="toggleProgress(4)">
+    <div class="prog-check" id="prog4"></div>
+    🗺️ Deployment
+  </div>
+  <div class="prog-item" onclick="toggleProgress(5)">
+    <div class="prog-check" id="prog5"></div>
+    📈 Characteristics
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">CompTIA A+ Core 1 · 220-1201 · Domain 4</div>
+  <h1 class="hero-title">VIRTUALIZATION<br><span>+ CLOUD COMPUTING</span></h1>
+  <p class="hero-subtitle">Lessons 8.1.7 + 8.2.9 · Security Risks · Service Models · Deployment · Characteristics</p>
+  <div class="hero-stats">
+    <div class="stat-pill gold">⭐ HIGH PRIORITY</div>
+    <div class="stat-pill">6 Priority Areas</div>
+    <div class="stat-pill">P1 → P6</div>
+    <div class="stat-pill red">🔴 EXAM TODAY</div>
+  </div>
+</div>
+
+<!-- PRIORITY STRIP -->
+<div class="priority-strip">
+  <div class="pri-item">
+    <div class="pri-label">🔥 P1</div>
+    <div class="pri-name">VM Escaping</div>
+  </div>
+  <div class="pri-item">
+    <div class="pri-label">🔥 P2</div>
+    <div class="pri-name">VM Sprawl</div>
+  </div>
+  <div class="pri-item">
+    <div class="pri-label">🔥 P3</div>
+    <div class="pri-name">VT-x / AMD-V</div>
+  </div>
+  <div class="pri-item">
+    <div class="pri-label">🔥 P4</div>
+    <div class="pri-name">PowerShell Cmdlets</div>
+  </div>
+  <div class="pri-item">
+    <div class="pri-label">🔥 P5</div>
+    <div class="pri-name">IaaS/PaaS/SaaS/DaaS</div>
+  </div>
+  <div class="pri-item">
+    <div class="pri-label">🔥 P6</div>
+    <div class="pri-name">Elasticity vs Scalability</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  SECTION 1 — VM SECURITY                              -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="section" id="sec-vsec">
+  <div class="section-header">
+    <span class="section-title">🔐 VM SECURITY RISKS</span>
+    <span class="section-badge badge-hot">P1 · MOST TESTED</span>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">🔓</div>
+      <div class="card-title">VM Escaping</div>
+      <ul>
+        <li>Malware breaks out of guest OS</li>
+        <li>Accesses hypervisor or host OS</li>
+        <li>Can infect other VMs on same host</li>
+        <li>Most severe virtualization threat</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon">📂</div>
+      <div class="card-title">VM Sprawl</div>
+      <ul>
+        <li>Too many unmanaged VMs created</li>
+        <li>No documentation or tracking</li>
+        <li>VMs go unpatched — security risk</li>
+        <li>Resources wasted, inventory lost</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon">📸</div>
+      <div class="card-title">Snapshot Risks</div>
+      <ul>
+        <li>Snapshots capture VM state</li>
+        <li>Old snapshots = outdated patches</li>
+        <li>Rolling back = reintroducing vulns</li>
+        <li>Must manage snapshot lifecycle</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mnemonic-box">
+    <div class="mnemonic-title">🧠 MEMORY CUE</div>
+    <div class="mnemonic-text">
+      VM Escaping = The prisoner breaks out of their cell and reaches the warden's office (host)<br>
+      VM Sprawl = Hotel that keeps adding rooms with no staff or cleaning schedule
+    </div>
+  </div>
+
+  <!-- DRILL QUESTIONS -->
+  <div class="drill-question">
+    <div class="drill-q-text">❓ Which of the following is the PRIMARY security risk where malware in one guest VM can access the host OS or other VMs?</div>
+    <div class="drill-options">
+      <button class="drill-option" onclick="checkAnswer(this, false)">A) VM snapshots</button>
+      <button class="drill-option" onclick="checkAnswer(this, true)">B) VM escaping</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">C) Load balancing</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">D) Dynamic memory</button>
+    </div>
+  </div>
+
+  <div class="drill-question">
+    <div class="drill-q-text">❓ An IT team keeps creating VMs without documentation or patching schedules. What problem is this?</div>
+    <div class="drill-options">
+      <button class="drill-option" onclick="checkAnswer(this, false)">A) VM escaping</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">B) Rapid elasticity</button>
+      <button class="drill-option" onclick="checkAnswer(this, true)">C) VM sprawl</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">D) Hypervisor misconfiguration</button>
+    </div>
+  </div>
+
+  <div class="trap-box">
+    <div class="trap-title">⚡ EXAM TRAPS</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> VM Escaping ≠ just a software bug — it's a full isolation breach</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> Snapshots are NOT automatically safe — rolling back reintroduces old vulnerabilities</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> VM Sprawl is an ADMINISTRATIVE problem, not a technical failure</div>
+  </div>
+
+  <div class="confidence-row">
+    <button class="conf-btn got" onclick="setConfidence('vsec', 'got', this)">✓ Got It</button>
+    <button class="conf-btn shaky" onclick="setConfidence('vsec', 'shaky', this)">⚡ Needs Reinforcement</button>
+    <button class="conf-btn nope" onclick="setConfidence('vsec', 'nope', this)">✗ Still Shaky</button>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  SECTION 2 — HOST REQUIREMENTS                        -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="section" id="sec-host">
+  <div class="section-header">
+    <span class="section-title">🖥️ HOST REQUIREMENTS</span>
+    <span class="section-badge badge-hot">P3 · BIOS CRITICAL</span>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">💾</div>
+      <div class="card-title">Memory (RAM)</div>
+      <ul>
+        <li>Every VM consumes dedicated RAM</li>
+        <li>Most common bottleneck on host</li>
+        <li>Host + all guests share physical RAM</li>
+        <li>Insufficient RAM = poor VM performance</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚙️</div>
+      <div class="card-title">CPU Virtualization</div>
+      <ul>
+        <li>Intel: VT-x (Virtualization Technology)</li>
+        <li>AMD: AMD-V (Virtualization)</li>
+        <li>Must be enabled in BIOS/UEFI</li>
+        <li>Without it: hypervisors cannot start</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon">💿</div>
+      <div class="card-title">Storage</div>
+      <ul>
+        <li>Each VM has its own virtual disk</li>
+        <li>SSD preferred for VM performance</li>
+        <li>Storage pools span multiple drives</li>
+        <li>RAID adds redundancy for VMs</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SVG FLOW: BIOS REQUIREMENT -->
+  <div class="flow-container">
+    <div style="font-family:'Orbitron',monospace;font-size:11px;color:var(--cyan);letter-spacing:2px;margin-bottom:16px;text-align:center;">VT-x / AMD-V REQUIREMENT FLOW</div>
+    <svg width="100%" height="120" viewBox="0 0 700 120" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 Z" fill="#00d4ff" opacity="0.8"/>
+        </marker>
+      </defs>
+      <!-- Boxes -->
+      <rect x="10" y="35" width="130" height="50" rx="6" fill="#1a1d2e" stroke="#00d4ff" stroke-width="1"/>
+      <text x="75" y="58" text-anchor="middle" fill="#00d4ff" font-family="Share Tech Mono" font-size="11">BIOS/UEFI</text>
+      <text x="75" y="73" text-anchor="middle" fill="#94a3b8" font-family="Share Tech Mono" font-size="10">Settings</text>
+
+      <rect x="200" y="35" width="130" height="50" rx="6" fill="#1a1d2e" stroke="#ffd700" stroke-width="1"/>
+      <text x="265" y="58" text-anchor="middle" fill="#ffd700" font-family="Share Tech Mono" font-size="11">VT-x / AMD-V</text>
+      <text x="265" y="73" text-anchor="middle" fill="#94a3b8" font-family="Share Tech Mono" font-size="10">Enable Here</text>
+
+      <rect x="390" y="10" width="140" height="46" rx="6" fill="#1a1d2e" stroke="#22c55e" stroke-width="1"/>
+      <text x="460" y="30" text-anchor="middle" fill="#22c55e" font-family="Share Tech Mono" font-size="11">✅ Hypervisor</text>
+      <text x="460" y="46" text-anchor="middle" fill="#94a3b8" font-family="Share Tech Mono" font-size="10">Can Start VMs</text>
+
+      <rect x="390" y="66" width="140" height="46" rx="6" fill="#1a1d2e" stroke="#ef4444" stroke-width="1"/>
+      <text x="460" y="86" text-anchor="middle" fill="#ef4444" font-family="Share Tech Mono" font-size="11">❌ Disabled</text>
+      <text x="460" y="102" text-anchor="middle" fill="#94a3b8" font-family="Share Tech Mono" font-size="10">No VMs Possible</text>
+
+      <!-- Arrows -->
+      <line x1="140" y1="60" x2="198" y2="60" stroke="#00d4ff" stroke-width="1.5" class="flow-arrow" marker-end="url(#arrow)"/>
+      <line x1="330" y1="50" x2="388" y2="35" stroke="#22c55e" stroke-width="1.5" class="flow-arrow" marker-end="url(#arrow)"/>
+      <line x1="330" y1="70" x2="388" y2="85" stroke="#ef4444" stroke-width="1.5" class="flow-arrow" marker-end="url(#arrow)"/>
+
+      <text x="362" y="42" fill="#22c55e" font-family="Share Tech Mono" font-size="9">ON</text>
+      <text x="355" y="78" fill="#ef4444" font-family="Share Tech Mono" font-size="9">OFF</text>
+    </svg>
+  </div>
+
+  <div class="drill-question">
+    <div class="drill-q-text">❓ What is the MOST common hardware bottleneck when running multiple virtual machines on a single host?</div>
+    <div class="drill-options">
+      <button class="drill-option" onclick="checkAnswer(this, false)">A) CPU speed</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">B) Storage capacity</button>
+      <button class="drill-option" onclick="checkAnswer(this, true)">C) Memory (RAM)</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">D) GPU</button>
+    </div>
+  </div>
+
+  <div class="drill-question">
+    <div class="drill-q-text">❓ Which BIOS/UEFI setting MUST be enabled for a hypervisor to run virtual machines?</div>
+    <div class="drill-options">
+      <button class="drill-option" onclick="checkAnswer(this, false)">A) Secure Boot</button>
+      <button class="drill-option" onclick="checkAnswer(this, true)">B) VT-x / AMD-V</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">C) PXE Boot</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">D) TPM 2.0</button>
+    </div>
+  </div>
+
+  <div class="trap-box">
+    <div class="trap-title">⚡ EXAM TRAPS</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> CPU may SUPPORT virtualization but BIOS has it disabled by default — always check BIOS</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> Memory is the bottleneck, NOT CPU — every guest VM consumes dedicated RAM</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> VT-x = Intel · AMD-V = AMD — both do the same thing, different name per brand</div>
+  </div>
+
+  <div class="confidence-row">
+    <button class="conf-btn got" onclick="setConfidence('host', 'got', this)">✓ Got It</button>
+    <button class="conf-btn shaky" onclick="setConfidence('host', 'shaky', this)">⚡ Needs Reinforcement</button>
+    <button class="conf-btn nope" onclick="setConfidence('host', 'nope', this)">✗ Still Shaky</button>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  SECTION 3 — POWERSHELL CMDLETS                       -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="section" id="sec-ps">
+  <div class="section-header">
+    <span class="section-title">⚡ POWERSHELL VM CMDLETS</span>
+    <span class="section-badge badge-test">P4 · MEMORIZE 3</span>
+  </div>
+
+  <div class="class-grid">
+    <div class="class-item" onclick="this.classList.toggle('flipped')">
+      <div class="class-label">New-VM</div>
+      <div class="class-name">CREATE</div>
+      <div class="class-desc">Click to reveal → Creates a brand new virtual machine from scratch</div>
+    </div>
+    <div class="class-item" onclick="this.classList.toggle('flipped')">
+      <div class="class-label">Set-VM</div>
+      <div class="class-name">MODIFY</div>
+      <div class="class-desc">Click to reveal → Modifies existing VM settings (memory, CPU, config)</div>
+    </div>
+    <div class="class-item" onclick="this.classList.toggle('flipped')">
+      <div class="class-label">Connect-VM<br>NetworkAdapter</div>
+      <div class="class-name">NETWORK</div>
+      <div class="class-desc">Click to reveal → Connects a VM to a virtual switch/network adapter</div>
+    </div>
+  </div>
+
+  <div class="mnemonic-box">
+    <div class="mnemonic-title">🧠 MEMORY CUE — NSC</div>
+    <div class="mnemonic-text">
+      N = New-VM → Build it<br>
+      S = Set-VM → Adjust it<br>
+      C = Connect-VMNetworkAdapter → Plug it in
+    </div>
+  </div>
+
+  <!-- Accordion: Reference Table -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      📋 CMDLET REFERENCE TABLE <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="accordion-inner">
+        <table class="ref-table">
+          <tr>
+            <th>Cmdlet</th>
+            <th>Action</th>
+            <th>Example Use</th>
+          </tr>
+          <tr>
+            <td>New-VM</td>
+            <td>Create new VM</td>
+            <td>New-VM -Name "VM1" -MemoryStartupBytes 2GB</td>
+          </tr>
+          <tr>
+            <td>Set-VM</td>
+            <td>Modify VM config</td>
+            <td>Set-VM -Name "VM1" -ProcessorCount 4</td>
+          </tr>
+          <tr>
+            <td>Connect-VMNetworkAdapter</td>
+            <td>Attach to vSwitch</td>
+            <td>Connect-VMNetworkAdapter -VMName "VM1" -SwitchName "External"</td>
+          </tr>
+          <tr>
+            <td>Get-VM</td>
+            <td>List VMs</td>
+            <td>Get-VM (shows all VMs and state)</td>
+          </tr>
+          <tr>
+            <td>Start-VM / Stop-VM</td>
+            <td>Power controls</td>
+            <td>Start-VM -Name "VM1"</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="drill-question">
+    <div class="drill-q-text">❓ You need to attach an existing VM to an external virtual switch. Which PowerShell cmdlet do you use?</div>
+    <div class="drill-options">
+      <button class="drill-option" onclick="checkAnswer(this, false)">A) New-VM</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">B) Set-VM</button>
+      <button class="drill-option" onclick="checkAnswer(this, true)">C) Connect-VMNetworkAdapter</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">D) Get-VMNetworkAdapter</button>
+    </div>
+  </div>
+
+  <div class="drill-question">
+    <div class="drill-q-text">❓ Which cmdlet modifies the memory or processor count of an existing virtual machine?</div>
+    <div class="drill-options">
+      <button class="drill-option" onclick="checkAnswer(this, false)">A) New-VM</button>
+      <button class="drill-option" onclick="checkAnswer(this, true)">B) Set-VM</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">C) Connect-VMNetworkAdapter</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">D) Update-VM</button>
+    </div>
+  </div>
+
+  <div class="trap-box">
+    <div class="trap-title">⚡ EXAM TRAPS</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> Set-VM ≠ Connect-VMNetworkAdapter — Set-VM changes config, Connect is for networking</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> "Update-VM" is NOT a real cmdlet — distractor answer</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> New-VM creates, Set-VM modifies — don't mix these up under pressure</div>
+  </div>
+
+  <div class="confidence-row">
+    <button class="conf-btn got" onclick="setConfidence('ps', 'got', this)">✓ Got It</button>
+    <button class="conf-btn shaky" onclick="setConfidence('ps', 'shaky', this)">⚡ Needs Reinforcement</button>
+    <button class="conf-btn nope" onclick="setConfidence('ps', 'nope', this)">✗ Still Shaky</button>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  SECTION 4 — CLOUD SERVICE MODELS                     -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="section" id="sec-models">
+  <div class="section-header">
+    <span class="section-title">☁️ CLOUD SERVICE MODELS</span>
+    <span class="section-badge badge-hot">P5 · CLASSIFY FAST</span>
+  </div>
+
+  <div class="class-grid">
+    <div class="class-item" onclick="this.classList.toggle('flipped')">
+      <div class="class-label">IaaS</div>
+      <div class="class-name">Infrastructure as a Service</div>
+      <div class="class-desc">Virtual servers, storage, networking — YOU manage OS + apps</div>
+    </div>
+    <div class="class-item" onclick="this.classList.toggle('flipped')">
+      <div class="class-label">PaaS</div>
+      <div class="class-name">Platform as a Service</div>
+      <div class="class-desc">Development environment — build/deploy apps without managing OS</div>
+    </div>
+    <div class="class-item" onclick="this.classList.toggle('flipped')">
+      <div class="class-label">SaaS</div>
+      <div class="class-name">Software as a Service</div>
+      <div class="class-desc">Subscription software delivered via internet — email, CRM, Office365</div>
+    </div>
+    <div class="class-item" onclick="this.classList.toggle('flipped')">
+      <div class="class-label">DaaS</div>
+      <div class="class-name">Desktop as a Service</div>
+      <div class="class-desc">Virtual desktops streamed to end users — hosted Windows/Linux desktops</div>
+    </div>
+  </div>
+
+  <div class="mnemonic-box">
+    <div class="mnemonic-title">🧠 MEMORY STACK — Who Controls What?</div>
+    <div class="mnemonic-text">
+      IaaS → You control: OS, apps, data (most control)<br>
+      PaaS → You control: apps, data only<br>
+      SaaS → You control: data only (least control)<br>
+      DaaS → You control: user desktop experience
+    </div>
+  </div>
+
+  <!-- Side-by-side comparison -->
+  <div class="compare-grid">
+    <div class="compare-card blue">
+      <div class="compare-title">🔵 IaaS vs PaaS</div>
+      <div class="compare-item"><span class="dot-blue">•</span>IaaS: raw infra — VMs, storage, networks</div>
+      <div class="compare-item"><span class="dot-blue">•</span>PaaS: dev platform — runtime, tools, middleware</div>
+      <div class="compare-item"><span class="dot-blue">•</span>IaaS = DevOps / Sysadmin use</div>
+      <div class="compare-item"><span class="dot-blue">•</span>PaaS = Developers building apps</div>
+      <div class="tag-row">
+        <span class="tag">VMs</span><span class="tag">Storage</span><span class="tag">Dev Tools</span>
+      </div>
+    </div>
+    <div class="compare-card gold">
+      <div class="compare-title" style="color:var(--gold)">🟡 SaaS vs DaaS</div>
+      <div class="compare-item"><span class="dot-gold">•</span>SaaS: software you use in a browser</div>
+      <div class="compare-item"><span class="dot-gold">•</span>DaaS: full desktop OS streamed to you</div>
+      <div class="compare-item"><span class="dot-gold">•</span>SaaS = Google Docs, Office 365, Salesforce</div>
+      <div class="compare-item"><span class="dot-gold">•</span>DaaS = Virtual Desktop Infrastructure (VDI)</div>
+      <div class="tag-row">
+        <span class="tag">Subscription</span><span class="tag">Browser</span><span class="tag">VDI</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="drill-question">
+    <div class="drill-q-text">❓ A company provisions virtual servers, load balancers, and cloud storage. Which cloud service model are they using?</div>
+    <div class="drill-options">
+      <button class="drill-option" onclick="checkAnswer(this, true)">A) IaaS</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">B) PaaS</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">C) SaaS</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">D) DaaS</button>
+    </div>
+  </div>
+
+  <div class="drill-question">
+    <div class="drill-q-text">❓ A development team needs a cloud environment to build and deploy apps without managing the underlying OS. Which model?</div>
+    <div class="drill-options">
+      <button class="drill-option" onclick="checkAnswer(this, false)">A) IaaS</button>
+      <button class="drill-option" onclick="checkAnswer(this, true)">B) PaaS</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">C) SaaS</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">D) DaaS</button>
+    </div>
+  </div>
+
+  <div class="trap-box">
+    <div class="trap-title">⚡ EXAM TRAPS</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> "Developer environment" = PaaS — NOT IaaS even if it's in the cloud</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> "Subscription software" = SaaS — don't confuse with DaaS</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> DaaS ≠ SaaS — DaaS is a full DESKTOP, SaaS is just an APP</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> IaaS = most flexibility/control · SaaS = least control</div>
+  </div>
+
+  <div class="confidence-row">
+    <button class="conf-btn got" onclick="setConfidence('models', 'got', this)">✓ Got It</button>
+    <button class="conf-btn shaky" onclick="setConfidence('models', 'shaky', this)">⚡ Needs Reinforcement</button>
+    <button class="conf-btn nope" onclick="setConfidence('models', 'nope', this)">✗ Still Shaky</button>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  SECTION 5 — DEPLOYMENT MODELS                        -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="section" id="sec-deploy">
+  <div class="section-header">
+    <span class="section-title">🗺️ CLOUD DEPLOYMENT MODELS</span>
+    <span class="section-badge badge-test">P5 · 4 MODELS</span>
+  </div>
+
+  <div class="compare-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px,1fr));">
+    <div class="compare-card blue">
+      <div class="compare-title">🔵 Private</div>
+      <div class="compare-item"><span class="dot-blue">•</span>Single org ownership</div>
+      <div class="compare-item"><span class="dot-blue">•</span>Full access control</div>
+      <div class="compare-item"><span class="dot-blue">•</span>On-premise or hosted</div>
+      <div class="compare-item"><span class="dot-blue">•</span>Highest security & cost</div>
+      <div class="tag-row"><span class="tag">Exclusive</span><span class="tag">Secure</span></div>
+    </div>
+    <div class="compare-card" style="border-color: var(--muted);">
+      <div class="compare-title" style="color:var(--text)">⬜ Public</div>
+      <div class="compare-item"><span style="color:var(--muted)">•</span>&nbsp;Shared with all tenants</div>
+      <div class="compare-item"><span style="color:var(--muted)">•</span>&nbsp;Managed by CSP (AWS, Azure)</div>
+      <div class="compare-item"><span style="color:var(--muted)">•</span>&nbsp;Pay-as-you-go pricing</div>
+      <div class="compare-item"><span style="color:var(--muted)">•</span>&nbsp;Lowest cost, least control</div>
+      <div class="tag-row"><span class="tag">Multitenant</span><span class="tag">CSP-managed</span></div>
+    </div>
+    <div class="compare-card gold">
+      <div class="compare-title">🟡 Hybrid</div>
+      <div class="compare-item"><span class="dot-gold">•</span>Mix of private + public</div>
+      <div class="compare-item"><span class="dot-gold">•</span>Sensitive data stays private</div>
+      <div class="compare-item"><span class="dot-gold">•</span>Scale to public when needed</div>
+      <div class="compare-item"><span class="dot-gold">•</span>Most complex to manage</div>
+      <div class="tag-row"><span class="tag">Flexible</span><span class="tag">Mixed</span></div>
+    </div>
+    <div class="compare-card" style="border-color: var(--purple);">
+      <div class="compare-title" style="color:var(--purple)">🟣 Community</div>
+      <div class="compare-item"><span style="color:var(--purple)">•</span>&nbsp;Shared between orgs</div>
+      <div class="compare-item"><span style="color:var(--purple)">•</span>&nbsp;Similar compliance needs</div>
+      <div class="compare-item"><span style="color:var(--purple)">•</span>&nbsp;Healthcare, gov, education</div>
+      <div class="compare-item"><span style="color:var(--purple)">•</span>&nbsp;NOT open to public</div>
+      <div class="tag-row"><span class="tag">Limited Group</span><span class="tag">Shared Compliance</span></div>
+    </div>
+  </div>
+
+  <div class="drill-question">
+    <div class="drill-q-text">❓ An organization requires strict data ownership, full access control, and no shared infrastructure. Which deployment model is best?</div>
+    <div class="drill-options">
+      <button class="drill-option" onclick="checkAnswer(this, true)">A) Private</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">B) Public</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">C) Hybrid</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">D) Community</button>
+    </div>
+  </div>
+
+  <div class="drill-question">
+    <div class="drill-q-text">❓ Several hospitals share cloud infrastructure to comply with HIPAA regulations. Which deployment model does this describe?</div>
+    <div class="drill-options">
+      <button class="drill-option" onclick="checkAnswer(this, false)">A) Private</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">B) Public</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">C) Hybrid</button>
+      <button class="drill-option" onclick="checkAnswer(this, true)">D) Community</button>
+    </div>
+  </div>
+
+  <div class="trap-box">
+    <div class="trap-title">⚡ EXAM TRAPS</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> Community ≠ Public — Community is a RESTRICTED group, not anyone with internet</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> Hybrid = private + public COMBINED — not just "two different clouds"</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> Public cloud = multi-TENANT — your data shares physical hardware with others</div>
+  </div>
+
+  <div class="confidence-row">
+    <button class="conf-btn got" onclick="setConfidence('deploy', 'got', this)">✓ Got It</button>
+    <button class="conf-btn shaky" onclick="setConfidence('deploy', 'shaky', this)">⚡ Needs Reinforcement</button>
+    <button class="conf-btn nope" onclick="setConfidence('deploy', 'nope', this)">✗ Still Shaky</button>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  SECTION 6 — CLOUD CHARACTERISTICS                    -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="section" id="sec-char">
+  <div class="section-header">
+    <span class="section-title">📈 CLOUD CHARACTERISTICS</span>
+    <span class="section-badge badge-hot">P6 · ELASTICITY VS SCALABILITY</span>
+  </div>
+
+  <div class="compare-grid">
+    <div class="compare-card blue">
+      <div class="compare-title">🔵 Rapid Elasticity</div>
+      <div class="compare-item"><span class="dot-blue">•</span>AUTOMATIC resource adjustment</div>
+      <div class="compare-item"><span class="dot-blue">•</span>Scales UP during traffic spike</div>
+      <div class="compare-item"><span class="dot-blue">•</span>Scales DOWN when demand drops</div>
+      <div class="compare-item"><span class="dot-blue">•</span>Responds in real-time</div>
+      <div class="compare-item"><span class="dot-blue">•</span>Think: rubber band stretching</div>
+      <div class="tag-row"><span class="tag">Dynamic</span><span class="tag">Auto</span><span class="tag">Real-time</span></div>
+    </div>
+    <div class="compare-card gold">
+      <div class="compare-title">🟡 Scalability</div>
+      <div class="compare-item"><span class="dot-gold">•</span>Ability to GROW capacity</div>
+      <div class="compare-item"><span class="dot-gold">•</span>Handles more users over time</div>
+      <div class="compare-item"><span class="dot-gold">•</span>Planned capacity expansion</div>
+      <div class="compare-item"><span class="dot-gold">•</span>Does NOT auto-shrink</div>
+      <div class="compare-item"><span class="dot-gold">•</span>Think: adding more lanes to a highway</div>
+      <div class="tag-row"><span class="tag">Growth</span><span class="tag">Planned</span><span class="tag">Users</span></div>
+    </div>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">🔗</div>
+      <div class="card-title">On-Demand Self-Service</div>
+      <ul>
+        <li>Provision resources without human interaction</li>
+        <li>Automated via portal or API</li>
+        <li>No waiting for IT approval</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon">📡</div>
+      <div class="card-title">Broad Network Access</div>
+      <ul>
+        <li>Access from any device, anywhere</li>
+        <li>Laptops, phones, tablets</li>
+        <li>Via internet or private WAN</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔄</div>
+      <div class="card-title">Resource Pooling</div>
+      <ul>
+        <li>CSP shares physical resources</li>
+        <li>Multi-tenant model</li>
+        <li>Customers unaware of exact location</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <div class="card-title">Measured Service</div>
+      <ul>
+        <li>Pay-per-use metering</li>
+        <li>Monitor, control, report usage</li>
+        <li>Transparent billing model</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="drill-question">
+    <div class="drill-q-text">❓ A cloud platform automatically increases server resources during a flash sale and reduces them afterward. Which cloud characteristic is this?</div>
+    <div class="drill-options">
+      <button class="drill-option" onclick="checkAnswer(this, true)">A) Rapid Elasticity</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">B) Scalability</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">C) Resource Pooling</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">D) Measured Service</button>
+    </div>
+  </div>
+
+  <div class="drill-question">
+    <div class="drill-q-text">❓ A company's cloud infrastructure can handle 10x more users than last year without performance loss due to planned capacity additions. This is best described as?</div>
+    <div class="drill-options">
+      <button class="drill-option" onclick="checkAnswer(this, false)">A) Rapid Elasticity</button>
+      <button class="drill-option" onclick="checkAnswer(this, true)">B) Scalability</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">C) On-Demand Self-Service</button>
+      <button class="drill-option" onclick="checkAnswer(this, false)">D) Broad Network Access</button>
+    </div>
+  </div>
+
+  <div class="trap-box">
+    <div class="trap-title">⚡ EXAM TRAPS</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> Elasticity = AUTOMATIC up AND down — Scalability = planned growth capacity</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> "Traffic spikes" = Elasticity · "More users over time" = Scalability</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> Scalability does NOT automatically reduce resources when demand drops</div>
+  </div>
+
+  <div class="confidence-row">
+    <button class="conf-btn got" onclick="setConfidence('char', 'got', this)">✓ Got It</button>
+    <button class="conf-btn shaky" onclick="setConfidence('char', 'shaky', this)">⚡ Needs Reinforcement</button>
+    <button class="conf-btn nope" onclick="setConfidence('char', 'nope', this)">✗ Still Shaky</button>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  SECTION 7 — MASTER TRAP LIST                         -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="section" id="sec-traps">
+  <div class="section-header">
+    <span class="section-title">⚡ MASTER EXAM TRAP LIST</span>
+    <span class="section-badge badge-test">REVIEW BEFORE EXAM</span>
+  </div>
+
+  <div class="trap-box" style="margin-bottom:12px;">
+    <div class="trap-title">⚡ VIRTUALIZATION TRAPS</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> VM Escaping = isolation breach, not just a software error</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> VM Sprawl = unmanaged VMs (admin problem, not hardware)</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> Memory = #1 host bottleneck (not CPU, not storage)</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> VT-x (Intel) = AMD-V (AMD) — same purpose, different brand names</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> CPU may SUPPORT virtualization but BIOS still disabled — check BIOS first</div>
+  </div>
+
+  <div class="trap-box" style="margin-bottom:12px;">
+    <div class="trap-title">⚡ POWERSHELL TRAPS</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> New-VM ≠ Set-VM — New creates, Set modifies</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> Connect-VMNetworkAdapter ≠ Set-VM — Set changes config, Connect adds networking</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> "Update-VM" is NOT real — it's a distractor</div>
+  </div>
+
+  <div class="trap-box" style="margin-bottom:12px;">
+    <div class="trap-title">⚡ CLOUD MODEL TRAPS</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> Developer environment → PaaS, not IaaS</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> Subscription software → SaaS, not DaaS</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> DaaS = full DESKTOP (VDI), SaaS = just an APPLICATION</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> Community ≠ Public — Community is a restricted group, not open to all</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> Hybrid = private + public combined (not just two public clouds)</div>
+  </div>
+
+  <div class="trap-box">
+    <div class="trap-title">⚡ CHARACTERISTICS TRAPS</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> Rapid Elasticity = AUTOMATIC scale up AND down</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> Scalability = ability to GROW (planned, not automatic shrink)</div>
+    <div class="trap-item"><span class="trap-icon">⚡</span> "Traffic spikes" = Elasticity · "Growth over time" = Scalability</div>
+  </div>
+
+  <!-- Accordion: Quick Reference -->
+  <div class="accordion" style="margin-top:20px;">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      📋 FINAL MEMORY BLOCK — QUICK REFERENCE <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="accordion-inner">
+        <table class="ref-table">
+          <tr><th>Topic</th><th>Key Fact</th></tr>
+          <tr><td>VM Escaping</td><td>Guest breaks out → reaches host/other VMs</td></tr>
+          <tr><td>VM Sprawl</td><td>Unmanaged, unpatched, undocumented VMs</td></tr>
+          <tr><td>RAM</td><td>Primary bottleneck for virtualization hosts</td></tr>
+          <tr><td>VT-x / AMD-V</td><td>BIOS setting required for hypervisors</td></tr>
+          <tr><td>New-VM</td><td>Create virtual machine</td></tr>
+          <tr><td>Set-VM</td><td>Modify VM configuration</td></tr>
+          <tr><td>Connect-VMNetworkAdapter</td><td>Attach to virtual switch</td></tr>
+          <tr><td>IaaS</td><td>Infrastructure — VMs, storage, network</td></tr>
+          <tr><td>PaaS</td><td>Platform — developer environment</td></tr>
+          <tr><td>SaaS</td><td>Software — subscription apps</td></tr>
+          <tr><td>DaaS</td><td>Desktop — virtual desktop streaming</td></tr>
+          <tr><td>Private Cloud</td><td>Single org, full control</td></tr>
+          <tr><td>Public Cloud</td><td>Multi-tenant, CSP-managed</td></tr>
+          <tr><td>Hybrid Cloud</td><td>Private + Public combined</td></tr>
+          <tr><td>Community Cloud</td><td>Shared by limited org group</td></tr>
+          <tr><td>Rapid Elasticity</td><td>Automatic real-time scaling</td></tr>
+          <tr><td>Scalability</td><td>Planned capacity growth</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notes section -->
+  <div class="accordion" style="margin-top:12px;">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      📝 MY NOTES <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="accordion-inner">
+        <textarea id="myNotes" style="width:100%;height:180px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:12px;font-family:'Share Tech Mono',monospace;font-size:12px;resize:vertical;" placeholder="Type your notes here... they save automatically in this session."></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  BOTTOM BAR                                           -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="bottom-bar">
+  <button class="bar-btn weakness" onclick="openModal('weakness')">🔴 WEAKNESS SHEET</button>
+  <button class="bar-btn drill" onclick="openModal('drill')">⚡ DRILL LIST</button>
+  <button class="bar-btn reset" onclick="resetAll()">↺ Reset</button>
+  <div class="bar-progress">Topics: <span id="doneCount">0</span>/6 done · Shaky: <span id="shakyCount">0</span></div>
+</div>
+
+<!-- WEAKNESS MODAL -->
+<div class="modal-overlay" id="modal-weakness">
+  <div class="modal-box">
+    <div class="modal-title">🔴 WEAKNESS SHEET <button class="modal-close" onclick="closeModal('weakness')">✕</button></div>
+    <div id="weakness-content">
+      <p style="color:var(--muted);font-size:13px;">No weaknesses flagged yet. Mark topics as "Needs Reinforcement" or "Still Shaky" to track them here.</p>
+    </div>
+  </div>
+</div>
+
+<!-- DRILL MODAL -->
+<div class="modal-overlay" id="modal-drill">
+  <div class="modal-box">
+    <div class="modal-title">⚡ RAPID DRILL LIST <button class="modal-close" onclick="closeModal('drill')">✕</button></div>
+    <div id="drill-content">
+      <div class="modal-item"><span class="modal-item-icon">⚡</span>VM Escaping = Guest breaks isolation → Host/other VMs at risk</div>
+      <div class="modal-item"><span class="modal-item-icon">⚡</span>VM Sprawl = Unmanaged, unpatched, undocumented VMs</div>
+      <div class="modal-item"><span class="modal-item-icon">⚡</span>Memory = #1 virtualization host bottleneck</div>
+      <div class="modal-item"><span class="modal-item-icon">⚡</span>VT-x / AMD-V must be ENABLED in BIOS</div>
+      <div class="modal-item"><span class="modal-item-icon">⚡</span>New-VM = Create · Set-VM = Modify · Connect-VMNetworkAdapter = Network</div>
+      <div class="modal-item"><span class="modal-item-icon">⚡</span>IaaS = infra · PaaS = dev platform · SaaS = software · DaaS = desktop</div>
+      <div class="modal-item"><span class="modal-item-icon">⚡</span>Private = 1 org · Public = all users · Hybrid = mixed · Community = limited group</div>
+      <div class="modal-item"><span class="modal-item-icon">⚡</span>Elasticity = AUTOMATIC real-time · Scalability = PLANNED growth</div>
+      <div class="modal-item"><span class="modal-item-icon">⚡</span>Community ≠ Public — Community is RESTRICTED</div>
+      <div class="modal-item"><span class="modal-item-icon">⚡</span>DaaS ≠ SaaS — DaaS = full desktop, SaaS = application</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── NAVIGATION ──
+  function scrollTo(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+
+  // ── ACCORDION ──
+  function toggleAccordion(header) {
+    header.classList.toggle('open');
+    const body = header.nextElementSibling;
+    body.classList.toggle('open');
+  }
+
+  // ── PROGRESS ──
+  const progressState = Array(6).fill(false);
+  function toggleProgress(idx) {
+    progressState[idx] = !progressState[idx];
+    const el = document.getElementById('prog' + idx);
+    el.classList.toggle('done', progressState[idx]);
+    el.textContent = progressState[idx] ? '✓' : '';
+    updateBar();
+  }
+
+  // ── DRILL ANSWERS ──
+  function checkAnswer(btn, correct) {
+    const options = btn.parentElement.querySelectorAll('.drill-option');
+    options.forEach(o => { o.disabled = true; o.classList.remove('correct', 'wrong'); });
+    if (correct) {
+      btn.classList.add('correct');
+    } else {
+      btn.classList.add('wrong');
+      // reveal correct
+      options.forEach(o => {
+        // We can't easily know which is correct from here, just highlight clicked
+      });
+    }
+  }
+
+  // ── CONFIDENCE ──
+  const confidenceState = {};
+  function setConfidence(topic, level, btn) {
+    const row = btn.parentElement;
+    row.querySelectorAll('.conf-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    confidenceState[topic] = level;
+    updateBar();
+    updateWeakness();
+  }
+
+  function updateBar() {
+    const done = progressState.filter(Boolean).length;
+    const shaky = Object.values(confidenceState).filter(v => v === 'shaky' || v === 'nope').length;
+    document.getElementById('doneCount').textContent = done;
+    document.getElementById('shakyCount').textContent = shaky;
+  }
+
+  // ── WEAKNESS MODAL ──
+  const topicNames = {
+    vsec: '🔐 VM Security',
+    host: '🖥️ Host Requirements',
+    ps: '⚡ PowerShell Cmdlets',
+    models: '☁️ Cloud Service Models',
+    deploy: '🗺️ Deployment Models',
+    char: '📈 Cloud Characteristics'
+  };
+
+  function updateWeakness() {
+    const container = document.getElementById('weakness-content');
+    const shakies = Object.entries(confidenceState).filter(([k, v]) => v === 'shaky' || v === 'nope');
+    if (shakies.length === 0) {
+      container.innerHTML = '<p style="color:var(--muted);font-size:13px;">No weaknesses flagged yet.</p>';
+      return;
+    }
+    container.innerHTML = shakies.map(([k, v]) => `
+      <div class="modal-item">
+        <span class="modal-item-icon">${v === 'nope' ? '✗' : '⚡'}</span>
+        <span>${topicNames[k] || k} — <span style="color:${v === 'nope' ? 'var(--red)' : 'var(--gold)'};">${v === 'nope' ? 'STILL SHAKY' : 'NEEDS REINFORCEMENT'}</span></span>
+      </div>
+    `).join('');
+  }
+
+  // ── MODAL ──
+  function openModal(type) {
+    document.getElementById('modal-' + type).classList.add('show');
+  }
+  function closeModal(type) {
+    document.getElementById('modal-' + type).classList.remove('show');
+  }
+  document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', (e) => {
+      if (e.target === m) m.classList.remove('show');
+    });
+  });
+
+  // ── RESET ──
+  function resetAll() {
+    if (!confirm('Reset all progress on this page?')) return;
+    Object.keys(confidenceState).forEach(k => delete confidenceState[k]);
+    document.querySelectorAll('.conf-btn').forEach(b => b.classList.remove('active'));
+    progressState.fill(false);
+    for (let i = 0; i < 6; i++) {
+      const el = document.getElementById('prog' + i);
+      el.classList.remove('done');
+      el.textContent = '';
+    }
+    document.querySelectorAll('.drill-option').forEach(o => {
+      o.classList.remove('correct', 'wrong', 'reveal');
+      o.disabled = false;
+    });
+    updateBar();
+    updateWeakness();
+  }
+</script>
+</body>
+</html>
